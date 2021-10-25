@@ -1,8 +1,7 @@
 package com.example.onelabpractice1.service;
 
-import com.example.onelabpractice1.dto.Card;
-import com.example.onelabpractice1.dto.User;
-import com.example.onelabpractice1.helper.CardHelper;
+import com.example.onelabpractice1.aspects.ExceptionChecker;
+import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.CardRepo;
 import com.example.onelabpractice1.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +21,10 @@ public class UserService {
         this.cardRepository = cardRepository;
     }
 
+    @ExceptionChecker
     public boolean createUser(User user) {
         if (userRepository.existByPhoneNumber(user.getPhoneNumber())) {
             return false;
-        }
-
-        if (cardRepository.isCardExist(user.getCard())) {
-            String newCardNumber = CardHelper.getNumber();
-            Card newCard = new Card(newCardNumber);
-            User updatedUser = userRepository.getByPhoneNumber(user.getPhoneNumber());
-            updatedUser.setCard(newCard);
-            userRepository.saveUser(updatedUser);
-            cardRepository.saveCard(newCard);
-            return true;
         }
 
         userRepository.saveUser(user);

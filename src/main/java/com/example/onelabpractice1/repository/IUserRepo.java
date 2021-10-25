@@ -1,6 +1,6 @@
 package com.example.onelabpractice1.repository;
 
-import com.example.onelabpractice1.dto.User;
+import com.example.onelabpractice1.models.User;
 
 import java.util.List;
 

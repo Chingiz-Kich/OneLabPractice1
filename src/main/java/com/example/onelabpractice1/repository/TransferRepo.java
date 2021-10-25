@@ -1,22 +1,29 @@
 package com.example.onelabpractice1.repository;
 
-import com.example.onelabpractice1.dto.Transfer;
+import com.example.onelabpractice1.dao.Impl.TransferDaoImpl;
+import com.example.onelabpractice1.models.Transfer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class TransferRepo implements ITransferRepo{
-    List<Transfer> historyList = new ArrayList<>();
+
+    private TransferDaoImpl transferDaoImpl;
+
+    @Autowired
+    public TransferRepo(TransferDaoImpl transferDaoImpl) {
+        this.transferDaoImpl = transferDaoImpl;
+    }
 
     @Override
     public List<Transfer> getHistoryList() {
-        return historyList;
+        return transferDaoImpl.getAll();
     }
 
     @Override
     public void saveTransfer(Transfer transfer) {
-        historyList.add(transfer);
+        transferDaoImpl.saveTransfer(transfer);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.onelabpractice1.repository;
 
-import com.example.onelabpractice1.dto.Card;
+import com.example.onelabpractice1.models.Card;
 
 import java.util.List;
 
@@ -12,4 +12,6 @@ public interface ICardRepo {
     void saveCard(Card card);
 
     boolean isCardExist(Card card);
+
+    void updateBalance(Card card);
 }

@@ -1,34 +1,38 @@
 package com.example.onelabpractice1.repository;
 
-import com.example.onelabpractice1.dto.User;
+import com.example.onelabpractice1.dao.Impl.UserDaoImpl;
+import com.example.onelabpractice1.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class UserRepo implements IUserRepo{
-    Map<String, User> users = new HashMap<>();
+
+    private UserDaoImpl userDaoImpl;
+
+    @Autowired UserRepo(UserDaoImpl userDaoImpl) {
+        this.userDaoImpl = userDaoImpl;
+    }
 
      @Override
      public void saveUser(User user) {
-        users.put(user.getPhoneNumber(), user);
+        userDaoImpl.saveUser(user);
      }
 
      @Override
      public List<User> getAll() {
-         return new ArrayList<>(users.values());
+         return userDaoImpl.getAll();
      }
 
      @Override
      public boolean existByPhoneNumber(String phoneNumber) {
-         return users.containsKey(phoneNumber);
-    }
+         return userDaoImpl.getByPhoneNumber(phoneNumber) != null;
+     }
 
     @Override
     public User getByPhoneNumber(String phoneNumber) {
-         return users.get(phoneNumber);
+         return userDaoImpl.getByPhoneNumber(phoneNumber);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.onelabpractice1;
 
-import com.example.onelabpractice1.dto.User;
+import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.TransferService;
 import com.example.onelabpractice1.service.UserService;

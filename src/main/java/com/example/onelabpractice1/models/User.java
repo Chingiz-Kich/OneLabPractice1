@@ -1,4 +1,4 @@
-package com.example.onelabpractice1.dto;
+package com.example.onelabpractice1.models;
 
 import com.example.onelabpractice1.helper.CardHelper;
 import lombok.Getter;
@@ -13,6 +13,10 @@ public class User {
     private String surname;
     private String phoneNumber;
     private Card card;
+
+    public User() {
+        this.card = createCard();
+    }
 
     public User(String name, String surname, String phoneNumber) {
         this.name = name;

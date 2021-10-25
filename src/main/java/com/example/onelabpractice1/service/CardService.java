@@ -1,6 +1,6 @@
 package com.example.onelabpractice1.service;
 
-import com.example.onelabpractice1.dto.Card;
+import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.repository.CardRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,5 +28,9 @@ public class CardService {
 
     public Card getCardByNumber(String number) {
         return cardRepository.getCardByNumber(number);
+    }
+
+    public void updateBalance(Card card) {
+        cardRepository.updateBalance(card);
     }
 }
