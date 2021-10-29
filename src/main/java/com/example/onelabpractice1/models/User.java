@@ -30,9 +30,6 @@ public class User {
             cascade = CascadeType.ALL)
     private Card card;
 
-    {
-        this.card = createCard();
-    }
 
     public User(String name, String surname, String phoneNumber) {
         this.name = name;
@@ -52,10 +49,5 @@ public class User {
                 "number:" + card.getNumber() +
                 " balance" + card.getBalance() +
                 " }" + "}";
-    }
-
-    private Card createCard() {
-        String cardNumber = CardHelper.getNumber();
-        return new Card(cardNumber);
     }
 }

@@ -1,6 +1,8 @@
 package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.aspects.ExceptionChecker;
+import com.example.onelabpractice1.helper.CardHelper;
+import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.CardRepository;
 import com.example.onelabpractice1.repository.UserRepository;
@@ -27,8 +29,12 @@ public class UserService {
             return false;
         }
 
+        String number = CardHelper.getNumber();
+        Card card = CardHelper.createCard(number);
+        user.setCard(card);
+
         userRepository.save(user);
-        cardRepository.save(user.getCard());
+        cardRepository.save(card);
         return true;
     }
 
@@ -54,5 +60,12 @@ public class UserService {
 
     public User getByPhoneNumber(String phoneNumber) {
         return userRepository.getByPhoneNumber(phoneNumber);
+    }
+
+    private boolean addCardToUser(String phoneNumber, Card card) {
+        User user = userRepository.findByPhoneNumber(phoneNumber);
+        user.setCard(card);
+        userRepository.save(user);
+        return true;
     }
 }
