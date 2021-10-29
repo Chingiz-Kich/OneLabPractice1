@@ -38,7 +38,7 @@ class CardServiceTest {
         when(cardRepository.findAll()).thenReturn(Arrays.<Card>asList(new Card("number")));
 
         List<Card> result = sut.getAllByBalanceASC();
-        Assertions.assertEquals(Arrays.asList(new Card("number")), result);
+        Assertions.assertEquals(Arrays.<Card>asList(new Card("number")), result);
     }
 
     @Test
