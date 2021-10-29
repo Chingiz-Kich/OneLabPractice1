@@ -77,6 +77,6 @@ public class TransferService {
     }
 
     private boolean existUser(User user) {
-        return userRepository.existsByPhoneNumber(user.getPhoneNumber());
+        return userRepository.existsUserByPhoneNumber(user.getPhoneNumber());
     }
 }

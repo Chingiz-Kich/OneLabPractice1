@@ -36,7 +36,7 @@ class TransferServiceTest {
 
     @Test
     void testMakeTransfer() {
-        when(userRepository.existsByPhoneNumber(anyString())).thenReturn(true);
+        when(userRepository.existsUserByPhoneNumber(anyString())).thenReturn(true);
 
         sut.makeTransfer(new User("name", "surname", "phoneNumber"), new User("name", "surname", "phoneNumber"), 0d);
     }

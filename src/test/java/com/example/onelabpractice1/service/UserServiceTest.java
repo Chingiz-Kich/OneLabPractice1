@@ -30,7 +30,7 @@ class UserServiceTest {
 
     @Test
     void testCreateUser() {
-        when(userRepository.existsByPhoneNumber(anyString())).thenReturn(true);
+        when(userRepository.existsUserByPhoneNumber(anyString())).thenReturn(true);
 
         boolean result = sut.createUser(new User(null, null, "phoneNumber"));
         Assertions.assertEquals(true, result);

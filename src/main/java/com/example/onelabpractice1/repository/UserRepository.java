@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByPhoneNumber(String phoneNumber);
 
-    boolean existsByPhoneNumber(String phoneNumber);
+    boolean existsUserByPhoneNumber(String phoneNumber);
 
     User getByPhoneNumber(String phoneNumber);
 
