@@ -2,8 +2,8 @@ package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.aspects.ExceptionChecker;
 import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.repository.CardRepo;
-import com.example.onelabpractice1.repository.UserRepo;
+import com.example.onelabpractice1.repository.CardRepository;
+import com.example.onelabpractice1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,39 +12,39 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private UserRepo userRepository;
-    private CardRepo cardRepository;
+    private UserRepository userRepository;
+    private CardRepository cardRepository;
 
     @Autowired
-    public UserService(UserRepo userRepository, CardRepo cardRepository) {
+    public UserService(UserRepository userRepository, CardRepository cardRepository) {
         this.userRepository = userRepository;
         this.cardRepository = cardRepository;
     }
 
     @ExceptionChecker
     public boolean createUser(User user) {
-        if (userRepository.existByPhoneNumber(user.getPhoneNumber())) {
+        if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
             return false;
         }
 
-        userRepository.saveUser(user);
-        cardRepository.saveCard(user.getCard());
+        userRepository.save(user);
+        cardRepository.save(user.getCard());
         return true;
     }
 
     public List<User> getAllUsers() {
-        return userRepository.getAll();
+        return userRepository.findAll();
     }
 
     public List<User> getAllSortByName() {
-        List<User> users = userRepository.getAll();
+        List<User> users = userRepository.findAll();
         users.sort(User.COMPARE_BY_NAME);
         return users;
     }
 
     public List<User> getAllWithName(String name) {
         List<User> listUser = new ArrayList<>();
-        for (User user : userRepository.getAll()) {
+        for (User user : userRepository.findAll()) {
             if (user.getName().equals(name)) {
                 listUser.add(user);
             }
