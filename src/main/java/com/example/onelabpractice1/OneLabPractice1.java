@@ -11,6 +11,6 @@ public class OneLabPractice1 {
         Application.start();
 
         // Throws NullPointerException to test @ExceptionChecker
-        ExceptionAdviceCheckApp.start();
+        // ExceptionAdviceCheckApp.start();
     }
 }

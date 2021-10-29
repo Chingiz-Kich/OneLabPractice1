@@ -2,9 +2,9 @@ package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.models.Transfer;
 import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.repository.CardRepo;
-import com.example.onelabpractice1.repository.TransferRepo;
-import com.example.onelabpractice1.repository.UserRepo;
+import com.example.onelabpractice1.repository.CardRepository;
+import com.example.onelabpractice1.repository.TransferRepository;
+import com.example.onelabpractice1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +15,11 @@ import java.util.List;
 
 @Service
 public class TransferService {
-    private TransferRepo transferRepository;
-    private UserRepo userRepository;
-    private CardRepo cardRepository;
+    private TransferRepository transferRepository;
+    private UserRepository userRepository;
+    private CardRepository cardRepository;
 
-    @Autowired TransferService(TransferRepo transferRepository, UserRepo userRepository, CardRepo cardRepository) {
+    @Autowired TransferService(TransferRepository transferRepository, UserRepository userRepository, CardRepository cardRepository) {
         this.transferRepository = transferRepository;
         this.userRepository = userRepository;
         this.cardRepository = cardRepository;
@@ -42,34 +42,28 @@ public class TransferService {
         double recipientBalance = recipient.getCard().getBalance();
         recipient.getCard().setBalance(recipientBalance + money);
 
-        cardRepository.updateBalance(sender.getCard());
-        cardRepository.updateBalance(recipient.getCard());
+        cardRepository.updateBalance(sender.getCard().getNumber(), senderBalance);
+        cardRepository.updateBalance(recipient.getCard().getNumber(), recipientBalance);
 
         Transfer transfer = new Transfer();
         transfer.setSenderPhoneNumber(sender.getPhoneNumber());
         transfer.setRecipientPhoneNumber(recipient.getPhoneNumber());
         transfer.setMoney(money);
         transfer.setTransferDate(Date.valueOf(LocalDate.now()));
-        transferRepository.saveTransfer(transfer);
+        transferRepository.save(transfer);
     }
 
-    public List<Transfer> getAllTransfersByDate(String date) {
+    public List<Transfer> getAllTransfersByDate() {
         List<Transfer> transfersList = new ArrayList<>();
-        LocalDate localDate = LocalDate.parse(date);
-
-        for (Transfer transfer : transferRepository.getHistoryList()) {
-            if (transfer.getTransferDate().equals(localDate)) {
-                transfersList.add(transfer);
-            }
-        }
-
+        transfersList = transferRepository.findAll();
+        transfersList.sort(Transfer.COMPARE_BY_DATE);
         return transfersList;
     }
 
     public List<Transfer> getTransferHistorySenderRecipient(User sender, User recipient) {
         List<Transfer> transfersList = new ArrayList<>();
 
-        for (Transfer transfer : transferRepository.getHistoryList()) {
+        for (Transfer transfer : transferRepository.findAll()) {
             if (transfer.getSenderPhoneNumber().equals(sender.getPhoneNumber()) && transfer.getRecipientPhoneNumber().equals(recipient.getPhoneNumber())) {
                 transfersList.add(transfer);
             }
@@ -83,6 +77,6 @@ public class TransferService {
     }
 
     private boolean existUser(User user) {
-        return userRepository.existByPhoneNumber(user.getPhoneNumber());
+        return userRepository.existsByPhoneNumber(user.getPhoneNumber());
     }
 }

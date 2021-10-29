@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyAspects {
 
-    @Pointcut("execution(* com.example.onelabpractice1.dao.Impl.UserDaoImpl.saveUser(..))")
+    @Pointcut("execution(* com.example.onelabpractice1.repository.UserRepository.save(..))")
     private void startEndNotify() { }
 
     @Around("startEndNotify()")
@@ -29,7 +29,7 @@ public class MyAspects {
                 " FROM " + joinPoint.getSignature().getDeclaringTypeName() +  " STARTS EXECUTING");
     }
 
-    @AfterReturning(value = "execution(* com.example.onelabpractice1.dao.Impl.CardDaoImpl.getByCardNumber(..))",
+    @AfterReturning(value = "execution(* com.example.onelabpractice1.repository.CardRepository.getCardByNumber(..))",
             returning = "retVal")
     public void afterReturningAdvice(JoinPoint jp, Object retVal){
         System.out.println("Method Signature: "  + jp.getSignature());

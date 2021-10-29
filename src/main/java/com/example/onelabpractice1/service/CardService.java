@@ -1,7 +1,7 @@
 package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.models.Card;
-import com.example.onelabpractice1.repository.CardRepo;
+import com.example.onelabpractice1.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,15 +9,15 @@ import java.util.List;
 
 @Service
 public class CardService {
-    private CardRepo cardRepository;
+    private CardRepository cardRepository;
 
     @Autowired
-    public CardService(CardRepo cardRepository) {
+    public CardService(CardRepository cardRepository) {
         this.cardRepository = cardRepository;
     }
 
     public List<Card> getAll() {
-        return cardRepository.getAll();
+        return cardRepository.findAll();
     }
 
     public List<Card> getAllByBalanceASC() {
@@ -30,7 +30,15 @@ public class CardService {
         return cardRepository.getCardByNumber(number);
     }
 
-    public void updateBalance(Card card) {
-        cardRepository.updateBalance(card);
+    public void deposit(String cardNumber, double money) {
+        Card card = cardRepository.getCardByNumber(cardNumber);
+        card.setBalance(card.getBalance() + money);
+        cardRepository.save(card);
+    }
+
+    public void withdraw(String cardNumber, double money) {
+        Card card = cardRepository.getCardByNumber(cardNumber);
+        card.setBalance(card.getBalance() - money);
+        cardRepository.save(card);
     }
 }

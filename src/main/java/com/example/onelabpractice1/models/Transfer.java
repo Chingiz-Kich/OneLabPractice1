@@ -1,21 +1,29 @@
 package com.example.onelabpractice1.models;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Date;
 
+@Entity
+@Table(name = "transfers")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Transfer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column
     private String senderPhoneNumber;
     private String recipientPhoneNumber;
     private double money;
     private Date transferDate;
 
-    public Transfer() {
-
-    }
 
     public Transfer(String senderPhoneNumber, String recipientPhoneNumber, double money, Date transferDate) {
         this.senderPhoneNumber = senderPhoneNumber;
@@ -23,6 +31,8 @@ public class Transfer {
         this.money = money;
         this.transferDate = transferDate;
     }
+
+    public static Comparator<Transfer> COMPARE_BY_DATE = Comparator.comparing(Transfer::getTransferDate);
 
     @Override
     public String toString() {

@@ -1,7 +1,7 @@
 CREATE TABLE users(
     name VARCHAR(255),
     surname VARCHAR(255),
-    phone_number VARCHAR(255) PRIMARY KEY
+    phone_number VARCHAR(255)
 );
 
 CREATE TABLE cards(
