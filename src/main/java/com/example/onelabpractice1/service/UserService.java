@@ -25,7 +25,7 @@ public class UserService {
 
     @ExceptionChecker
     public boolean createUser(User user) {
-        if (!userRepository.existsUserByPhoneNumber(user.getPhoneNumber())) {
+        if (userRepository.existsUserByPhoneNumber(user.getPhoneNumber())) {
             return false;
         }
 
