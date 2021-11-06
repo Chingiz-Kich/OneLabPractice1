@@ -1,3 +1,4 @@
+/*
 package com.example.onelabpractice1;
 
 import com.example.onelabpractice1.models.User;
@@ -23,3 +24,4 @@ public class ExceptionAdviceCheckApp {
         userService.createUser(u2);
     }
 }
+*/

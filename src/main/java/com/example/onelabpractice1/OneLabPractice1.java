@@ -8,7 +8,7 @@ public class OneLabPractice1 {
 
     public static void main(String[] args) {
         SpringApplication.run(OneLabPractice1.class, args);
-        Application.start();
+        // Application.start();
 
         // Throws NullPointerException to test @ExceptionChecker
         // ExceptionAdviceCheckApp.start();

@@ -1,11 +1,12 @@
 package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.aspects.ExceptionChecker;
-import com.example.onelabpractice1.helper.CardHelper;
 import com.example.onelabpractice1.models.Card;
+import com.example.onelabpractice1.models.Role;
+import com.example.onelabpractice1.models.Status;
 import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.repository.CardRepository;
 import com.example.onelabpractice1.repository.UserRepository;
+import com.example.onelabpractice1.requests.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,29 +14,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@ExceptionChecker
 public class UserService {
     private UserRepository userRepository;
-    private CardRepository cardRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, CardRepository cardRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.cardRepository = cardRepository;
     }
 
-    @ExceptionChecker
-    public boolean createUser(User user) {
-        if (userRepository.existsUserByPhoneNumber(user.getPhoneNumber())) {
+    public boolean registration(UserRequest userRequest) {
+        if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
             return false;
         }
 
-        String number = CardHelper.getNumber();
-        Card card = CardHelper.createCard(number);
-        user.setCard(card);
-
+        User user = new User(userRequest.getName(), userRequest.getSurname(), userRequest.getEmail(), userRequest.getPhoneNumber(), userRequest.getPassword());
+        user.setRole(Role.USER);
+        user.setStatus(Status.ACTIVE);
         userRepository.save(user);
-        cardRepository.save(card);
         return true;
+    }
+
+    public User getUserByLoginPassword(String phoneNumber, String password) {
+        if (userRepository.existsByPhoneNumberAndPassword(phoneNumber, password)) {
+            return userRepository.getByPhoneNumber(phoneNumber);
+        }
+        return null;
     }
 
     public List<User> getAllUsers() {
@@ -62,7 +66,11 @@ public class UserService {
         return userRepository.getByPhoneNumber(phoneNumber);
     }
 
-    private boolean addCardToUser(String phoneNumber, Card card) {
+    public boolean isPhoneNumberExist(String phoneNumber) {
+        return userRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    public boolean addCardToUser(String phoneNumber, Card card) {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         user.setCard(card);
         userRepository.save(user);

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component("Application")
 public class Application {
-    private static UserService userService;
+/*    private static UserService userService;
     private static CardService cardService;
     private static TransferService transferService;
 
@@ -53,5 +53,5 @@ public class Application {
 
         System.out.println("\n" + "Transfer History: ");
         System.out.println(transferService.getTransferHistorySenderRecipient(u1, u2));
-    }
+    }*/
 }

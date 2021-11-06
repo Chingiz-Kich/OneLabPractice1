@@ -22,9 +22,9 @@ public class Card {
     private String number;
     private double balance;
 
-    public Card(String number) {
+    public Card(String number, double balance) {
         this.number = number;
-        this.balance = 500;
+        this.balance = balance;
     }
 
     public static Comparator<Card> COMPARE_BY_BALANCE = Comparator.comparing(Card::getBalance);

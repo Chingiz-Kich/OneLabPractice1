@@ -15,6 +15,6 @@ public class CardHelper {
     }
 
     public static Card createCard(String number) {
-        return new Card(number);
+        return new Card(number, 500);
     }
 }
