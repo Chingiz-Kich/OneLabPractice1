@@ -16,26 +16,14 @@ import java.util.List;
 @Service
 public class TransferService {
     private TransferRepository transferRepository;
-    private UserRepository userRepository;
     private CardRepository cardRepository;
 
-    @Autowired TransferService(TransferRepository transferRepository, UserRepository userRepository, CardRepository cardRepository) {
+    @Autowired TransferService(TransferRepository transferRepository, CardRepository cardRepository) {
         this.transferRepository = transferRepository;
-        this.userRepository = userRepository;
         this.cardRepository = cardRepository;
     }
 
     public void makeTransfer(User sender, User recipient, double money) {
-        if (!existUser(sender) || !existUser(recipient)) {
-            System.out.println("User does not exist!");
-            return;
-        }
-
-        if (!enoughBalance(sender, money)) {
-            System.out.println("Balance is not enough");
-            return;
-        }
-
         double senderBalance = sender.getCard().getBalance();
         sender.getCard().setBalance(senderBalance - money);
 
@@ -68,15 +56,6 @@ public class TransferService {
                 transfersList.add(transfer);
             }
         }
-
         return transfersList;
-    }
-
-    private boolean enoughBalance(User user, double money) {
-        return user.getCard().getBalance() >= money;
-    }
-
-    private boolean existUser(User user) {
-        return !userRepository.existsByPhoneNumber(user.getPhoneNumber());
     }
 }

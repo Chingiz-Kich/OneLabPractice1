@@ -43,11 +43,11 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/userRegister")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequest userRequest) {
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-        boolean result = userService.registration(userRequest);
+        boolean result = userService.registration(userRequest, false);
         if (!result) {
             return ResponseEntity.ok(Constants.USER_ALREADY_EXIST);
         }
@@ -56,19 +56,51 @@ public class AuthController {
         return ResponseEntity.ok(Constants.REGISTERED_SUCCESSFULLY);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody @Valid LoginRequests loginRequests) {
+    @PostMapping("/adminRegister")
+    public ResponseEntity<?> registerAdmin(@RequestBody @Valid UserRequest userRequest) {
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+
+        boolean result = userService.registration(userRequest, true);
+        if (!result) {
+            return ResponseEntity.ok(Constants.FAILED);
+        }
+
+        Card card = cardService.createCard();
+        userService.addCardToUser(userRequest.getPhoneNumber(), card);
+        return ResponseEntity.ok(Constants.ADMIN_CREATED);
+    }
+
+    @PostMapping("/userLogin")
+    public ResponseEntity<?> userLogin(@RequestBody @Valid LoginRequests loginRequests) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequests.getPhoneNumber(), loginRequests.getPassword()));
-            User user = userService.getByPhoneNumber(loginRequests.getPhoneNumber());
-            System.out.println("USER IS EXIST");
-            String token = jwtTokenProvider.createToken(loginRequests.getPhoneNumber(), user.getRole().name());
-            Map<Object, Object> response = new HashMap<>();
-            response.put("phone number: ", loginRequests.getPhoneNumber());
-            response.put("token: ", token);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(authentication(loginRequests, false));
         } catch (AuthenticationException ex) {
             return new ResponseEntity<>("Invalid phone number/password combination", HttpStatus.FORBIDDEN);
         }
     }
+
+    @PostMapping("/adminLogin")
+    public ResponseEntity<?> adminLogin (@RequestBody @Valid LoginRequests loginRequests) {
+        try {
+            return ResponseEntity.ok(authentication(loginRequests, true));
+        } catch (AuthenticationException ex) {
+            return new ResponseEntity<>("Invalid phone number/password combination", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    private Map<Object, Object> authentication(LoginRequests loginRequests, boolean isAdmin) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequests.getPhoneNumber(), loginRequests.getPassword()));
+        User user = userService.getByPhoneNumber(loginRequests.getPhoneNumber());
+        String token = jwtTokenProvider.createToken(loginRequests.getPhoneNumber(), user.getRole().name());
+        Map<Object, Object> response = new HashMap<>();
+        if (isAdmin) {
+            response.put("Admin phone number: ", loginRequests.getPhoneNumber());
+            response.put("token: ", token);
+            return response;
+        }
+        response.put("User phone number: ", loginRequests.getPhoneNumber());
+        response.put("token: ", token);
+        return response;
+    }
+
 }

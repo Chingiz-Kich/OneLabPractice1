@@ -55,7 +55,7 @@ public class CardService {
         cardRepository.save(card);
     }
 
-    public boolean isCardNumberExist(String cardNumber) {
-        return cardRepository.existsCardByNumber(cardNumber);
+    public boolean isEnoughBalance(String phoneNumber, double money) {
+        return userRepository.getByPhoneNumber(phoneNumber).getCard().getBalance() >= money;
     }
 }

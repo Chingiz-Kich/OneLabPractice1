@@ -23,13 +23,19 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public boolean registration(UserRequest userRequest) {
+    public boolean registration(UserRequest userRequest, boolean isAdmin) {
         if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
             return false;
         }
 
         User user = new User(userRequest.getName(), userRequest.getSurname(), userRequest.getEmail(), userRequest.getPhoneNumber(), userRequest.getPassword());
-        user.setRole(Role.USER);
+
+        if (isAdmin) {
+            user.setRole(Role.ADMIN);
+        } else {
+            user.setRole(Role.USER);
+        }
+
         user.setStatus(Status.ACTIVE);
         userRepository.save(user);
         return true;
