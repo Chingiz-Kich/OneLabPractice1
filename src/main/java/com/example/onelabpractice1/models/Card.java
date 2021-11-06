@@ -11,7 +11,6 @@ import java.util.Comparator;
 @Table(name = "cards")
 @Getter
 @Setter
-// @Data ДЛЯ ЧЕГО
 @NoArgsConstructor
 public class Card {
     @Id

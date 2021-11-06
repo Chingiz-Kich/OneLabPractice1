@@ -2,7 +2,6 @@ package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.helper.CardHelper;
 import com.example.onelabpractice1.models.Card;
-import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.CardRepository;
 import com.example.onelabpractice1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,9 @@ public class CardService {
     private UserRepository userRepository;
 
     @Autowired
-    public CardService(CardRepository cardRepository) {
+    public CardService(CardRepository cardRepository, UserRepository userRepository) {
         this.cardRepository = cardRepository;
+        this.userRepository = userRepository;
     }
 
     public Card createCard() {
@@ -43,8 +43,7 @@ public class CardService {
 
 
     public void deposit(String phoneNumber, double money) {
-        User user = userRepository.findByPhoneNumber(phoneNumber);
-        Card card = user.getCard();
+        Card card = userRepository.findByPhoneNumber(phoneNumber).getCard();
         card.setBalance(card.getBalance() + money);
         cardRepository.save(card);
     }
