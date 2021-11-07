@@ -10,7 +10,6 @@ public class DepositRequest {
     private String phoneNumber;
 
     @NotNull(message = "Money field cannot be null")
-    @NotEmpty(message = "Money field cannot be empty")
     private double money;
 
     public String getPhoneNumber() {

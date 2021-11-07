@@ -28,7 +28,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        authorities.add(new SimpleGrantedAuthority(Role.USER.name()));
+        // authorities.add(new SimpleGrantedAuthority(Role.USER.name()));
         return authorities;
     }
 
