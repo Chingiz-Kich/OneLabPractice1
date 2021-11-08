@@ -1,6 +1,5 @@
 package com.example.onelabpractice1.configuration;
 
-import com.example.onelabpractice1.models.Permission;
 import com.example.onelabpractice1.security.JwtConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
