@@ -38,18 +38,18 @@ public class CardService {
     }
 
     public Card getCardByCardNumber(String cardNumber) {
-        return cardRepository.getCardByNumber(cardNumber);
+        return cardRepository.findCardByNumber(cardNumber);
     }
 
 
-    public void deposit(String phoneNumber, double money) {
+    public void depositByPhoneNumber(String phoneNumber, double money) {
         Card card = userRepository.findByPhoneNumber(phoneNumber).getCard();
         card.setBalance(card.getBalance() + money);
         cardRepository.save(card);
     }
 
-    public void withdraw(String cardNumber, double money) {
-        Card card = cardRepository.getCardByNumber(cardNumber);
+    public void withdrawByPhoneNumber(String phoneNumber, double money) {
+        Card card = userRepository.findByPhoneNumber(phoneNumber).getCard();
         card.setBalance(card.getBalance() - money);
         cardRepository.save(card);
     }

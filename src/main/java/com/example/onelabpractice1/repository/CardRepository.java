@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface CardRepository extends CrudRepository<Card, String> {
-    Card getCardByNumber(String number);
+    Card findCardByNumber(String number);
 
     boolean existsCardByNumber(String number);
 

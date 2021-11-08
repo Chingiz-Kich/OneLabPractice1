@@ -91,7 +91,7 @@ public class AuthController {
     private Map<Object, Object> authentication(LoginRequests loginRequests, boolean isAdmin) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequests.getPhoneNumber(), loginRequests.getPassword()));
         User user = userService.getByPhoneNumber(loginRequests.getPhoneNumber());
-        String token = jwtTokenProvider.createToken(loginRequests.getPhoneNumber(), user.getRole().name());
+        String token = jwtTokenProvider.createToken(loginRequests.getPhoneNumber());
         Map<Object, Object> response = new HashMap<>();
         if (isAdmin) {
             response.put("Admin phone number: ", loginRequests.getPhoneNumber());

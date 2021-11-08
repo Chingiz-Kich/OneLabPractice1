@@ -1,6 +1,5 @@
 package com.example.onelabpractice1.security;
 
-import com.example.onelabpractice1.models.Role;
 import com.example.onelabpractice1.models.Status;
 import com.example.onelabpractice1.models.User;
 import lombok.Data;

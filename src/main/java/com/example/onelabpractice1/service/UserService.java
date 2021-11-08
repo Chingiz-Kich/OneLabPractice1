@@ -8,6 +8,7 @@ import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.UserRepository;
 import com.example.onelabpractice1.requests.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,11 +42,12 @@ public class UserService {
         return true;
     }
 
-    public User getUserByLoginPassword(String phoneNumber, String password) {
-        if (userRepository.existsByPhoneNumberAndPassword(phoneNumber, password)) {
-            return userRepository.getByPhoneNumber(phoneNumber);
+    public User getUserByPhoneNumberAndPassword(String phoneNumber, String password) {
+        User user = userRepository.findUserByPhoneNumberAndPassword(phoneNumber, password);
+        if (user != null) {
+            return user;
         }
-        return null;
+        throw new UsernameNotFoundException("User not found");
     }
 
     public List<User> getAllUsers() {

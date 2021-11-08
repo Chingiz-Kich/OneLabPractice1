@@ -1,10 +1,10 @@
 package com.example.onelabpractice1.security;
 
 import io.jsonwebtoken.*;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +13,13 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.Date;
 
 @Component
+@Log
 public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
@@ -38,27 +41,31 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String createToken(String username, String role) {
-        Claims claims = Jwts.claims().setSubject(username);
-        claims.put("role", role);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
-
+    public String createToken(String username) {
+        Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setSubject(username)
+                .setExpiration(date)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return !claimsJws.getBody().getExpiration().before(new Date());
-        } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (ExpiredJwtException expEx) {
+            log.severe("Token expired");
+        } catch (UnsupportedJwtException unsEx) {
+            log.severe("Unsupported jwt");
+        } catch (MalformedJwtException mjEx) {
+            log.severe("Malformed jwt");
+        } catch (SignatureException sEx) {
+            log.severe("Invalid signature");
+        } catch (Exception e) {
+            log.severe("invalid token");
         }
+        return false;
     }
 
     public Authentication getAuthentication(String token) {
