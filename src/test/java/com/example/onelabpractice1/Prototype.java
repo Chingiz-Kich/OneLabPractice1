@@ -4,6 +4,9 @@ import com.example.onelabpractice1.helper.CardHelper;
 import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.Transfer;
 import com.example.onelabpractice1.models.User;
+import com.example.onelabpractice1.requests.DepositRequest;
+import com.example.onelabpractice1.requests.LoginRequest;
+import com.example.onelabpractice1.requests.TransferByPhoneRequest;
 import com.example.onelabpractice1.requests.UserRequest;
 
 import java.util.Calendar;
@@ -58,5 +61,47 @@ public class Prototype {
         double money = 500;
         Date transferDate = new GregorianCalendar(2021, Calendar.NOVEMBER, 8, 12, 18).getTime();
         return new Transfer(senderPhoneNumber, recipientPhoneNumber, money, transferDate);
+    }
+
+    public static UserRequest userRequestAaa() {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setName("Aaa");
+        userRequest.setSurname("Bbb");
+        userRequest.setEmail("email");
+        userRequest.setPhoneNumber("phoneNumber1");
+        userRequest.setPassword("password");
+        return userRequest;
+    }
+
+    public static UserRequest userRequestName() {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setName("name");
+        userRequest.setSurname("surname");
+        userRequest.setEmail("email");
+        userRequest.setPhoneNumber("phoneNumber2");
+        userRequest.setPassword("password");
+        return userRequest;
+    }
+
+    public static DepositRequest depositRequestAaa() {
+        DepositRequest depositRequest = new DepositRequest();
+        depositRequest.setPhoneNumber("phoneNumber1");
+        depositRequest.setMoney(500);
+        return depositRequest;
+    }
+
+    public static LoginRequest loginRequestsAaa() {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setPhoneNumber("phoneNumber1");
+        loginRequest.setPassword("password");
+        return loginRequest;
+    }
+
+    public static TransferByPhoneRequest transferByPhoneRequest() {
+        TransferByPhoneRequest transferByPhoneRequest = new TransferByPhoneRequest();
+        transferByPhoneRequest.setSenderPhoneNumber("phoneNumber1");
+        transferByPhoneRequest.setRecipientPhoneNumber("phoneNumber2");
+        transferByPhoneRequest.setMoney(500);
+        return transferByPhoneRequest;
     }
 }

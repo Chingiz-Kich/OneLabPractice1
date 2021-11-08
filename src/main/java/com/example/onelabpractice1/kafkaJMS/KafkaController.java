@@ -1,4 +1,4 @@
-package com.example.onelabpractice1.controllers;
+package com.example.onelabpractice1.kafkaJMS;
 
 import com.example.onelabpractice1.kafkaJMS.ProducerService;
 import org.springframework.beans.factory.annotation.Autowired;

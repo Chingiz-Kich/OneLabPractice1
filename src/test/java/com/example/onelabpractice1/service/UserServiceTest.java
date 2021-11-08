@@ -123,7 +123,7 @@ class UserServiceTest {
 
         when(userRepository.findByPhoneNumber("phoneNumber1")).thenReturn(user1);
 
-        boolean result = userService.addCardToUser("phoneNumber1", new Card("newNumber", 0d));
+        boolean result = userService.addCardToUserByPhoneNumber("phoneNumber1", new Card("newNumber", 0d));
         Assertions.assertTrue(result);
     }
 }

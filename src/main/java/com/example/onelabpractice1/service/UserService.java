@@ -78,7 +78,7 @@ public class UserService {
         return userRepository.existsByPhoneNumber(phoneNumber);
     }
 
-    public boolean addCardToUser(String phoneNumber, Card card) {
+    public boolean addCardToUserByPhoneNumber(String phoneNumber, Card card) {
         User user = userRepository.findByPhoneNumber(phoneNumber);
         user.setCard(card);
         userRepository.save(user);

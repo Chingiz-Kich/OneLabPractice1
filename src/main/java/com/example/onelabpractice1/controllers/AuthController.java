@@ -3,7 +3,7 @@ package com.example.onelabpractice1.controllers;
 import com.example.onelabpractice1.constants.Constants;
 import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.requests.LoginRequests;
+import com.example.onelabpractice1.requests.LoginRequest;
 import com.example.onelabpractice1.requests.UserRequest;
 import com.example.onelabpractice1.security.JwtTokenProvider;
 import com.example.onelabpractice1.service.CardService;
@@ -49,10 +49,10 @@ public class AuthController {
 
         boolean result = userService.registration(userRequest, false);
         if (!result) {
-            return ResponseEntity.ok(Constants.USER_ALREADY_EXIST);
+            return ResponseEntity.ok(Constants.FAILED);
         }
         Card card = cardService.createCard();
-        userService.addCardToUser(userRequest.getPhoneNumber(), card);
+        userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
         return ResponseEntity.ok(Constants.REGISTERED_SUCCESSFULLY);
     }
 
@@ -66,39 +66,39 @@ public class AuthController {
         }
 
         Card card = cardService.createCard();
-        userService.addCardToUser(userRequest.getPhoneNumber(), card);
+        userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
         return ResponseEntity.ok(Constants.ADMIN_CREATED);
     }
 
     @PostMapping("/userLogin")
-    public ResponseEntity<?> userLogin(@RequestBody @Valid LoginRequests loginRequests) {
+    public ResponseEntity<?> userLogin(@RequestBody @Valid LoginRequest loginRequest) {
         try {
-            return ResponseEntity.ok(authentication(loginRequests, false));
+            return ResponseEntity.ok(authentication(loginRequest, false));
         } catch (AuthenticationException ex) {
             return new ResponseEntity<>("Invalid phone number/password combination", HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/adminLogin")
-    public ResponseEntity<?> adminLogin (@RequestBody @Valid LoginRequests loginRequests) {
+    public ResponseEntity<?> adminLogin (@RequestBody @Valid LoginRequest loginRequest) {
         try {
-            return ResponseEntity.ok(authentication(loginRequests, true));
+            return ResponseEntity.ok(authentication(loginRequest, true));
         } catch (AuthenticationException ex) {
             return new ResponseEntity<>("Invalid phone number/password combination", HttpStatus.FORBIDDEN);
         }
     }
 
-    private Map<Object, Object> authentication(LoginRequests loginRequests, boolean isAdmin) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequests.getPhoneNumber(), loginRequests.getPassword()));
-        User user = userService.getByPhoneNumber(loginRequests.getPhoneNumber());
-        String token = jwtTokenProvider.createToken(loginRequests.getPhoneNumber());
+    private Map<Object, Object> authentication(LoginRequest loginRequest, boolean isAdmin) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getPhoneNumber(), loginRequest.getPassword()));
+        User user = userService.getByPhoneNumber(loginRequest.getPhoneNumber());
+        String token = jwtTokenProvider.createToken(loginRequest.getPhoneNumber());
         Map<Object, Object> response = new HashMap<>();
         if (isAdmin) {
-            response.put("Admin phone number: ", loginRequests.getPhoneNumber());
+            response.put("Admin phone number: ", loginRequest.getPhoneNumber());
             response.put("token: ", token);
             return response;
         }
-        response.put("User phone number: ", loginRequests.getPhoneNumber());
+        response.put("User phone number: ", loginRequest.getPhoneNumber());
         response.put("token: ", token);
         return response;
     }
