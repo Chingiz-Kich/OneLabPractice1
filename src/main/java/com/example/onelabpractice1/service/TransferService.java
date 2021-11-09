@@ -4,7 +4,6 @@ import com.example.onelabpractice1.models.Transfer;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.CardRepository;
 import com.example.onelabpractice1.repository.TransferRepository;
-import com.example.onelabpractice1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

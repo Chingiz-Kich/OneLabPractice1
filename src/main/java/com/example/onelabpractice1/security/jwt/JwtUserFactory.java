@@ -16,6 +16,8 @@ public final class JwtUserFactory {
     }
 
     public static JwtUser create(User user) {
+        List<Role> roles = new ArrayList<>();
+        roles.add(user.getRole());
         return new JwtUser(
                 user.getId(),
                 user.getName(),
@@ -23,7 +25,7 @@ public final class JwtUserFactory {
                 user.getEmail(),
                 user.getPhoneNumber(),
                 user.getPassword(),
-                mapToGrantedAuthorities(new ArrayList<>(user.getRoles())),
+                mapToGrantedAuthorities(roles),
                 user.getStatus().equals(Status.ACTIVE)
         );
     }

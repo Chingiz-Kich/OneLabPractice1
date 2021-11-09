@@ -1,16 +1,10 @@
 package com.example.onelabpractice1.models;
 
 import lombok.Data;
-import javax.persistence.Id;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
 @Table(name = "roles")
@@ -28,7 +22,7 @@ public class Role {
     @Column(name = "status")
     private Status status;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @OneToMany
     private List<User> users;
 
     @Override

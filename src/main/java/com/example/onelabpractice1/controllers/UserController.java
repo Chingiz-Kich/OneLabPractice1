@@ -28,7 +28,6 @@ public class UserController {
 
 
     @PostMapping("/deposit")
-    // @PreAuthorize("hasAnyAuthority('developers:read')")
     public ResponseEntity<?> deposit(@RequestBody @Valid DepositRequest depositRequest) {
         if (!userService.isPhoneNumberExist(depositRequest.getPhoneNumber())) {
             return ResponseEntity.ok(Constants.PHONE_NUMBER_NOT_FOUND);

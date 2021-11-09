@@ -28,16 +28,6 @@ public class UserService {
     }
 
     public boolean registration(UserRequest userRequest, boolean isAdmin) {
-        Role adminRole = new Role();
-        adminRole.setName("ROLE_ADMIN");
-        adminRole.setStatus(Status.ACTIVE);
-        roleRepository.save(adminRole);
-
-        Role userRole = new Role();
-        userRole.setName("ROLE_USER");
-        userRole.setStatus(Status.ACTIVE);
-        roleRepository.save(userRole);
-
         if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
             return false;
         }
@@ -45,16 +35,24 @@ public class UserService {
         User user = new User(userRequest.getName(), userRequest.getSurname(), userRequest.getEmail(), userRequest.getPhoneNumber(), userRequest.getPassword());
 
         if (isAdmin) {
-            Role roleUser = roleRepository.findByName("ROLE_ADMIN");
-            List<Role> userRoles = new ArrayList<>();
-            userRoles.add(roleUser);
-            user.setRoles(userRoles);
+            if (!roleRepository.existsByName("ROLE_ADMIN")) {
+                Role adminRole = new Role();
+                adminRole.setName("ROLE_ADMIN");
+                adminRole.setStatus(Status.ACTIVE);
+                roleRepository.save(adminRole);
+            }
+            Role roleAdmin = roleRepository.findByName("ROLE_ADMIN");
+            user.setRole(roleAdmin);
 
         } else {
+            if (!roleRepository.existsByName("ROLE_USER")) {
+                Role userRole = new Role();
+                userRole.setName("ROLE_USER");
+                userRole.setStatus(Status.ACTIVE);
+                roleRepository.save(userRole);
+            }
             Role roleUser = roleRepository.findByName("ROLE_USER");
-            List<Role> userRoles = new ArrayList<>();
-            userRoles.add(roleUser);
-            user.setRoles(userRoles);
+            user.setRole(roleUser);
         }
 
         user.setStatus(Status.ACTIVE);

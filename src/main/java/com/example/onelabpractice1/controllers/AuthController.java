@@ -9,7 +9,6 @@ import com.example.onelabpractice1.security.jwt.JwtTokenProvider;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -83,7 +82,7 @@ public class AuthController {
                 throw new UsernameNotFoundException("User with phone number: " + phoneNumber + " not found");
             }
 
-            String token = jwtTokenProvider.createToken(phoneNumber, user.getRoles());
+            String token = jwtTokenProvider.createToken(phoneNumber, user.getRole());
 
             Map<Object, Object> response = new HashMap<>();
             response.put("phone number ", phoneNumber);
@@ -106,7 +105,7 @@ public class AuthController {
                 throw new UsernameNotFoundException("Admin with phone number: " + phoneNumber + " not found");
             }
 
-            String token = jwtTokenProvider.createToken(phoneNumber, user.getRoles());
+            String token = jwtTokenProvider.createToken(phoneNumber, user.getRole());
 
             Map<Object, Object> response = new HashMap<>();
             response.put("phone number ", phoneNumber);
