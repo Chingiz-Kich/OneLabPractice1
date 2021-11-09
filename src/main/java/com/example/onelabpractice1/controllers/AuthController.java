@@ -29,11 +29,11 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private AuthenticationManager authenticationManager;
-    private JwtTokenProvider jwtTokenProvider;
-    private UserService userService;
-    private CardService cardService;
-    private PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
+    private final CardService cardService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService, CardService cardService, PasswordEncoder passwordEncoder) {
@@ -54,7 +54,7 @@ public class AuthController {
         }
         Card card = cardService.createCard();
         userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
-        return ResponseEntity.ok(Constants.REGISTERED_SUCCESSFULLY);
+        return ResponseEntity.ok(Constants.USER_REGISTERED_SUCCESSFULLY);
     }
 
     @PostMapping("/adminRegister")
@@ -68,15 +68,15 @@ public class AuthController {
 
         Card card = cardService.createCard();
         userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
-        return ResponseEntity.ok(Constants.ADMIN_CREATED);
+        return ResponseEntity.ok(Constants.ADMIN_REGISTERED_SUCCESSFULLY);
     }
 
     @PostMapping("/userLogin")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
         try {
             String phoneNumber = loginRequest.getPhoneNumber();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));
-            User user = userService.getByPhoneNumber(phoneNumber);
+            User user = userService.getByPhoneNumberAndRole(phoneNumber, "ROLE_USER");
 
             if (user == null) {
                 throw new UsernameNotFoundException("User with phone number: " + phoneNumber + " not found");
@@ -99,7 +99,7 @@ public class AuthController {
         try {
             String phoneNumber = loginRequest.getPhoneNumber();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));
-            User user = userService.getByPhoneNumber(phoneNumber);
+            User user = userService.getByPhoneNumberAndRole(phoneNumber, "ROLE_ADMIN");
 
             if (user == null) {
                 throw new UsernameNotFoundException("Admin with phone number: " + phoneNumber + " not found");
@@ -116,19 +116,4 @@ public class AuthController {
             throw new BadCredentialsException("Invalid phone number or password for Admin account");
         }
     }
-
-/*    private Map<Object, Object> authentication(LoginRequest loginRequest, boolean isAdmin) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getPhoneNumber(), loginRequest.getPassword()));
-        User user = userService.getByPhoneNumber(loginRequest.getPhoneNumber());
-        String token = jwtTokenProvider.createToken(loginRequest.getPhoneNumber());
-        Map<Object, Object> response = new HashMap<>();
-        if (isAdmin) {
-            response.put("Admin phone number: ", loginRequest.getPhoneNumber());
-            response.put("token: ", token);
-            return response;
-        }
-        response.put("User phone number: ", loginRequest.getPhoneNumber());
-        response.put("token: ", token);
-        return response;
-    }*/
 }

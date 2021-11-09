@@ -3,7 +3,11 @@ package com.example.onelabpractice1.controllers;
 import com.example.onelabpractice1.Prototype;
 import com.example.onelabpractice1.constants.Constants;
 import com.example.onelabpractice1.models.Card;
+import com.example.onelabpractice1.models.Role;
+import com.example.onelabpractice1.models.User;
+import com.example.onelabpractice1.requests.LoginRequest;
 import com.example.onelabpractice1.requests.UserRequest;
+import com.example.onelabpractice1.security.jwt.JwtTokenProvider;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -16,12 +20,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
 class AuthControllerTest {
     @Mock
     AuthenticationManager authenticationManager;
+    @Mock
+    JwtTokenProvider jwtTokenProvider;
     @Mock
     UserService userService;
     @Mock
@@ -38,90 +46,82 @@ class AuthControllerTest {
 
     @Test
     void testRegisterUser() {
-        UserRequest userRequest1 = Prototype.userRequestAaa();
+        UserRequest userRequest1 = Prototype.userRequestA();
+        Card card1 = Prototype.createCard1();
+
         when(userService.registration(userRequest1, false)).thenReturn(true);
-
-        Card card1 = cardService.createCard();
-
-        when(userService.addCardToUserByPhoneNumber("phoneNumber1", card1)).thenReturn(true);
-
-        // when(cardService.createCard()).thenReturn(new Card("number", 0d));
+        when(cardService.createCard()).thenReturn(card1);
+        when(userService.addCardToUserByPhoneNumber(userRequest1.getPhoneNumber(), card1)).thenReturn(true);
 
         ResponseEntity<?> result = authController.registerUser(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.REGISTERED_SUCCESSFULLY), result);
+        Assertions.assertEquals(ResponseEntity.ok(Constants.USER_REGISTERED_SUCCESSFULLY), result);
     }
 
     @Test
-    void testRegisterUserIfFalse() {
-        UserRequest userRequest2 = Prototype.userRequest();
-        when(userService.registration(userRequest2, true)).thenReturn(true);
+    void testUserRegisterFail() {
+        UserRequest userRequest1 = Prototype.userRequestA();
 
-        ResponseEntity<?> result = authController.registerUser(userRequest2);
+        when(userService.registration(userRequest1, false)).thenReturn(false);
+
+        ResponseEntity<?> result = authController.registerUser(userRequest1);
         Assertions.assertEquals(ResponseEntity.ok(Constants.FAILED), result);
     }
 
     @Test
     void testRegisterAdmin() {
-        UserRequest userRequest1 = Prototype.userRequestAaa();
+        UserRequest userRequest1 = Prototype.userRequestA();
+        Card card1 = Prototype.createCard1();
+
         when(userService.registration(userRequest1, true)).thenReturn(true);
-
-        Card card1 = cardService.createCard();
-
-        when(userService.addCardToUserByPhoneNumber("phoneNumber1", card1)).thenReturn(true);
-
-        // when(cardService.createCard()).thenReturn(new Card("number", 0d));
+        when(cardService.createCard()).thenReturn(card1);
+        when(userService.addCardToUserByPhoneNumber(userRequest1.getPhoneNumber(), card1)).thenReturn(true);
 
         ResponseEntity<?> result = authController.registerAdmin(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.ADMIN_CREATED), result);
+        Assertions.assertEquals(ResponseEntity.ok(Constants.ADMIN_REGISTERED_SUCCESSFULLY), result);
     }
 
     @Test
-    void testRegisterAdminIfFalse() {
-        UserRequest userRequest2 = Prototype.userRequest();
-        when(userService.registration(userRequest2, false)).thenReturn(true);
+    void testAdminRegisterFail() {
+        UserRequest userRequest1 = Prototype.userRequestA();
 
-        ResponseEntity<?> result = authController.registerAdmin(userRequest2);
+        when(userService.registration(userRequest1, false)).thenReturn(false);
+
+        ResponseEntity<?> result = authController.registerUser(userRequest1);
         Assertions.assertEquals(ResponseEntity.ok(Constants.FAILED), result);
     }
 
-/*    @Test
+    @Test
     void testUserLogin() {
-        LoginRequest loginRequest1 = Prototype.loginRequestsAaa();
-        User user1 = Prototype.userAaa();
+        LoginRequest loginRequest1 = Prototype.loginRequestsA();
+        User user1 = Prototype.userA();
 
-        // when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber())).thenReturn(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber()));
-        when(userService.getByPhoneNumber("phoneNumber1")).thenReturn(user1);
+        when(userService.getByPhoneNumberAndRole(loginRequest1.getPhoneNumber(), "ROLE_USER")).thenReturn(user1);
+        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn("token");
+
+        Map<Object, Object> response = new HashMap<>();
+        response.put("phone number ", loginRequest1.getPhoneNumber());
+        response.put("token ", "token");
+
 
         ResponseEntity<?> result = authController.userLogin(loginRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(authentication(loginRequest1, false)), result);
-    }*/
-
-/*    @Test
-    void testAdminLogin() {
-        LoginRequest loginRequest1 = Prototype.loginRequestsAaa();
-        User user1 = Prototype.userAaa();
-
-        // when(jwtTokenProvider.createToken(anyString())).thenReturn("createTokenResponse");
-        when(userService.getByPhoneNumber("phoneNumber1")).thenReturn(user1);
-
-        ResponseEntity<?> result = authController.adminLogin(loginRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(authentication(loginRequest1, true)), result);
+        Assertions.assertEquals(ResponseEntity.ok(response), result);
     }
 
-    private Map<Object, Object> authentication(LoginRequest loginRequest, boolean isAdmin) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getPhoneNumber(), loginRequest.getPassword()));
-        User user = userService.getByPhoneNumber(loginRequest.getPhoneNumber());
-        String token = jwtTokenProvider.createToken(loginRequest.getPhoneNumber());
+    @Test
+    void testAdminLogin() {
+        LoginRequest loginRequest1 = Prototype.loginRequestsA();
+        User user1 = Prototype.userA();
+
+        when(userService.getByPhoneNumberAndRole(loginRequest1.getPhoneNumber(), "ROLE_ADMIN")).thenReturn(user1);
+        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn("token");
+
         Map<Object, Object> response = new HashMap<>();
-        if (isAdmin) {
-            response.put("Admin phone number: ", loginRequest.getPhoneNumber());
-            response.put("token: ", token);
-            return response;
-        }
-        response.put("User phone number: ", loginRequest.getPhoneNumber());
-        response.put("token: ", token);
-        return response;
-    }*/
+        response.put("phone number ", loginRequest1.getPhoneNumber());
+        response.put("token ", "token");
+
+        ResponseEntity<?> result = authController.adminLogin(loginRequest1);
+        Assertions.assertEquals(ResponseEntity.ok(response), result);
+    }
 }
 
 //Generated with love by TestMe :) Please report issues and submit feature requests at: http://weirddev.com/forum#!/testme

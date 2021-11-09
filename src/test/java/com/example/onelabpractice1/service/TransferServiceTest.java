@@ -31,8 +31,9 @@ class TransferServiceTest {
 
     @Test
     void testMakeTransfer() {
-        User user1 = Prototype.userAaa();
-        User user2 = Prototype.userName();
+        User user1 = Prototype.userA();
+        User user2 = Prototype.userB();
+
         sut.makeTransfer(user1, user2, 500);
     }
 
@@ -59,8 +60,8 @@ class TransferServiceTest {
 
         when(transferRepository.findAll()).thenReturn(transferList);
 
-        User user1 = Prototype.userAaa();
-        User user2 = Prototype.userName();
+        User user1 = Prototype.userA();
+        User user2 = Prototype.userB();
 
         List<Transfer> result = sut.getTransferHistorySenderRecipient(user1, user2);
 

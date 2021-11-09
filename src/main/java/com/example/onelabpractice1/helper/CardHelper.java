@@ -1,7 +1,5 @@
 package com.example.onelabpractice1.helper;
 
-import com.example.onelabpractice1.models.Card;
-
 public class CardHelper {
     public static String getNumber() {
         int max = 9999;
@@ -12,9 +10,5 @@ public class CardHelper {
             number.append(random_int);
         }
         return number.toString();
-    }
-
-    public static Card createCard(String number) {
-        return new Card(number, 500);
     }
 }

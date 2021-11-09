@@ -89,7 +89,7 @@ public class UserService {
     }
 
     public User getByPhoneNumber(String phoneNumber) {
-        return userRepository.getByPhoneNumber(phoneNumber);
+        return userRepository.findByPhoneNumber(phoneNumber);
     }
 
     public boolean isPhoneNumberExist(String phoneNumber) {
@@ -101,5 +101,10 @@ public class UserService {
         user.setCard(card);
         userRepository.save(user);
         return true;
+    }
+
+    public User getByPhoneNumberAndRole(String phoneNumber, String roleName) {
+        Role role = roleRepository.findByName(roleName);
+        return userRepository.findByPhoneNumberAndRole(phoneNumber, role);
     }
 }

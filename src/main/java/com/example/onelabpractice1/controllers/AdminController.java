@@ -34,6 +34,16 @@ public class AdminController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/getAllUsersSortByName")
+    public List<User> getAllUsersSortByName() {
+        return userService.getAllSortByName();
+    }
+
+    @GetMapping("/getAllUserWithName")
+    public List<User> getAllUserWithName(@RequestParam String name) {
+        return userService.getAllWithName(name);
+    }
+
     @PostMapping("/transferByPhoneNumber")
     public ResponseEntity<?> transferByPhone(@RequestBody TransferByPhoneRequest transfer) {
         if (!userService.isPhoneNumberExist(transfer.getSenderPhoneNumber()) || !userService.isPhoneNumberExist(transfer.getRecipientPhoneNumber())) {

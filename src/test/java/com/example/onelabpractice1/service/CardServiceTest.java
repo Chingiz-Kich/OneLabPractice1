@@ -87,7 +87,7 @@ class CardServiceTest {
 
     @Test
     void testDepositByPhoneNumber() {
-        User user1 = Prototype.userAaa();
+        User user1 = Prototype.userA();
         double expectedBalance = user1.getCard().getBalance() + 500;
 
         when(userRepository.findByPhoneNumber(user1.getPhoneNumber())).thenReturn(user1);
@@ -100,7 +100,7 @@ class CardServiceTest {
 
     @Test
     void testWithdrawByPhoneNumber() {
-        User user1 = Prototype.userAaa();
+        User user1 = Prototype.userA();
         double expectedBalance = user1.getCard().getBalance() - 500;
 
         when(userRepository.findByPhoneNumber(user1.getPhoneNumber())).thenReturn(user1);
@@ -113,9 +113,9 @@ class CardServiceTest {
 
     @Test
     void testIsEnoughBalance() {
-        User user1 = Prototype.userAaa();
+        User user1 = Prototype.userA();
 
-        when(userRepository.getByPhoneNumber(user1.getPhoneNumber())).thenReturn(user1);
+        when(userRepository.findByPhoneNumber(user1.getPhoneNumber())).thenReturn(user1);
 
         boolean result = sut.isEnoughBalance(user1.getPhoneNumber(), 500);
         Assertions.assertTrue(result);

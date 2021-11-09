@@ -1,27 +1,20 @@
 package com.example.onelabpractice1;
 
 import com.example.onelabpractice1.helper.CardHelper;
-import com.example.onelabpractice1.models.Card;
-import com.example.onelabpractice1.models.Transfer;
-import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.requests.DepositRequest;
-import com.example.onelabpractice1.requests.LoginRequest;
-import com.example.onelabpractice1.requests.TransferByPhoneRequest;
-import com.example.onelabpractice1.requests.UserRequest;
+import com.example.onelabpractice1.models.*;
+import com.example.onelabpractice1.requests.*;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 public class Prototype {
-    public static User userAaa() {
-        User userTest1 = new User("Aaa", "Bbb", "email", "phoneNumber1", "password");
+    public static User userA() {
+        User userTest1 = new User("Aaa", "ASurname", "email", "phoneNumber1", "password");
         userTest1.setCard(new Card("cardA", 500));
         return userTest1;
     }
 
-    public static User userName() {
-        User userTest2 = new User("name",  "surname", "email", "phoneNumber2", "password");
+    public static User userB() {
+        User userTest2 = new User("Bbb",  "Bsurname", "email", "phoneNumber2", "password");
         userTest2.setCard(new Card("cardNumber", 500));
         return userTest2;
     }
@@ -63,34 +56,34 @@ public class Prototype {
         return new Transfer(senderPhoneNumber, recipientPhoneNumber, money, transferDate);
     }
 
-    public static UserRequest userRequestAaa() {
+    public static UserRequest userRequestA() {
         UserRequest userRequest = new UserRequest();
         userRequest.setName("Aaa");
-        userRequest.setSurname("Bbb");
+        userRequest.setSurname("ASurname");
         userRequest.setEmail("email");
         userRequest.setPhoneNumber("phoneNumber1");
         userRequest.setPassword("password");
         return userRequest;
     }
 
-    public static UserRequest userRequestName() {
+    public static UserRequest userRequestB() {
         UserRequest userRequest = new UserRequest();
-        userRequest.setName("name");
-        userRequest.setSurname("surname");
+        userRequest.setName("Bbb");
+        userRequest.setSurname("BSurname");
         userRequest.setEmail("email");
         userRequest.setPhoneNumber("phoneNumber2");
         userRequest.setPassword("password");
         return userRequest;
     }
 
-    public static DepositRequest depositRequestAaa() {
+    public static DepositRequest depositRequestA() {
         DepositRequest depositRequest = new DepositRequest();
         depositRequest.setPhoneNumber("phoneNumber1");
         depositRequest.setMoney(500);
         return depositRequest;
     }
 
-    public static LoginRequest loginRequestsAaa() {
+    public static LoginRequest loginRequestsA() {
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setPhoneNumber("phoneNumber1");
         loginRequest.setPassword("password");
@@ -101,7 +94,30 @@ public class Prototype {
         TransferByPhoneRequest transferByPhoneRequest = new TransferByPhoneRequest();
         transferByPhoneRequest.setSenderPhoneNumber("phoneNumber1");
         transferByPhoneRequest.setRecipientPhoneNumber("phoneNumber2");
-        transferByPhoneRequest.setMoney(500);
+        transferByPhoneRequest.setMoney(100);
         return transferByPhoneRequest;
+    }
+
+    public static Role roleUser() {
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_USER");
+        role.setStatus(Status.ACTIVE);
+        return role;
+    }
+
+    public static Role roleAdmin() {
+        Role role = new Role();
+        role.setId(1L);
+        role.setName("ROLE_ADMIN");
+        role.setStatus(Status.ACTIVE);
+        return role;
+    }
+
+    public static WithdrawRequest withdrawRequestA() {
+        WithdrawRequest withdrawRequest = new WithdrawRequest();
+        withdrawRequest.setPhoneNumber("phoneNumber1");
+        withdrawRequest.setMoney(100);
+        return withdrawRequest;
     }
 }

@@ -55,6 +55,6 @@ public class CardService {
     }
 
     public boolean isEnoughBalance(String phoneNumber, double money) {
-        return userRepository.getByPhoneNumber(phoneNumber).getCard().getBalance() >= money;
+        return userRepository.findByPhoneNumber(phoneNumber).getCard().getBalance() >= money;
     }
 }

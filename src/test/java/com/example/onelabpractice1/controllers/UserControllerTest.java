@@ -2,9 +2,9 @@ package com.example.onelabpractice1.controllers;
 
 import com.example.onelabpractice1.Prototype;
 import com.example.onelabpractice1.constants.Constants;
-import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.requests.DepositRequest;
 import com.example.onelabpractice1.requests.UserRequest;
+import com.example.onelabpractice1.requests.WithdrawRequest;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -32,15 +32,54 @@ class UserControllerTest {
 
     @Test
     void testDeposit() {
-        UserRequest userRequest1 = Prototype.userRequestAaa();
+        DepositRequest depositRequest1 = Prototype.depositRequestA();
 
-        when(userService.registration(userRequest1, false)).thenReturn(true);
-        when(userService.isPhoneNumberExist("phoneNumber1")).thenReturn(true);
-
-        DepositRequest depositRequest1 = Prototype.depositRequestAaa();
+        when(userService.isPhoneNumberExist(depositRequest1.getPhoneNumber())).thenReturn(true);
 
         ResponseEntity<?> result = userController.deposit(depositRequest1);
         Assertions.assertEquals(ResponseEntity.ok(Constants.OK), result);
+    }
+
+    @Test
+    void testDepositFail() {
+        DepositRequest depositRequest1 = Prototype.depositRequestA();
+
+        when(userService.isPhoneNumberExist(depositRequest1.getPhoneNumber())).thenReturn(false);
+
+        ResponseEntity<?> result = userController.deposit(depositRequest1);
+        Assertions.assertEquals(ResponseEntity.ok(Constants.PHONE_NUMBER_NOT_FOUND), result);
+    }
+
+    @Test
+    void testWithdraw() {
+        WithdrawRequest withdrawRequest1 = Prototype.withdrawRequestA();
+
+        when(userService.isPhoneNumberExist(withdrawRequest1.getPhoneNumber())).thenReturn(true);
+        when(cardService.isEnoughBalance(withdrawRequest1.getPhoneNumber(), withdrawRequest1.getMoney())).thenReturn(true);
+
+        ResponseEntity<?> result = userController.withdraw(withdrawRequest1);
+        Assertions.assertEquals(ResponseEntity.ok(Constants.OK), result);
+    }
+
+    @Test
+    void testWithdrawFail1() {
+        WithdrawRequest withdrawRequest1 = Prototype.withdrawRequestA();
+
+        when(userService.isPhoneNumberExist(withdrawRequest1.getPhoneNumber())).thenReturn(false);
+
+        ResponseEntity<?> result = userController.withdraw(withdrawRequest1);
+        Assertions.assertEquals(ResponseEntity.ok(Constants.PHONE_NUMBER_NOT_FOUND), result);
+    }
+
+    @Test
+    void testWithdrawFail2() {
+        WithdrawRequest withdrawRequest1 = Prototype.withdrawRequestA();
+
+        when(userService.isPhoneNumberExist(withdrawRequest1.getPhoneNumber())).thenReturn(true);
+        when(cardService.isEnoughBalance(withdrawRequest1.getPhoneNumber(), withdrawRequest1.getMoney())).thenReturn(false);
+
+        ResponseEntity<?> result = userController.withdraw(withdrawRequest1);
+        Assertions.assertEquals(ResponseEntity.ok(Constants.BALANCE_IS_NOT_ENOUGH), result);
     }
 }
 

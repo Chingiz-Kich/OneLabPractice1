@@ -1,6 +1,6 @@
 package com.example.onelabpractice1.repository;
 
-import com.example.onelabpractice1.models.Card;
+import com.example.onelabpractice1.models.Role;
 import com.example.onelabpractice1.models.User;
 import org.springframework.data.repository.CrudRepository;
 
@@ -11,11 +11,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    User getByPhoneNumber(String phoneNumber);
-
     boolean existsByPhoneNumberAndPassword(String phoneNumber, String password);
 
     User findUserByPhoneNumberAndPassword(String phoneNumber, String password);
 
     List<User> findAll();
+
+    User findByPhoneNumberAndRole(String phoneNumber, Role role);
 }

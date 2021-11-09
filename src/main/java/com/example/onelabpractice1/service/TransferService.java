@@ -41,8 +41,7 @@ public class TransferService {
     }
 
     public List<Transfer> getAllTransfersByDate() {
-        List<Transfer> transfersList = new ArrayList<>();
-        transfersList = transferRepository.findAll();
+        List<Transfer> transfersList = transferRepository.findAll();
         transfersList.sort(Transfer.COMPARE_BY_DATE);
         return transfersList;
     }

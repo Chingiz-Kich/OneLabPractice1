@@ -4,7 +4,6 @@ import com.example.onelabpractice1.Prototype;
 import com.example.onelabpractice1.constants.Constants;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.requests.TransferByPhoneRequest;
-import com.example.onelabpractice1.requests.UserRequest;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.TransferService;
 import com.example.onelabpractice1.service.UserService;
@@ -17,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -39,8 +37,8 @@ class AdminControllerTest {
 
     @Test
     void testGetAllUsers() {
-        User user1 = Prototype.userAaa();
-        User user2 = Prototype.userName();
+        User user1 = Prototype.userA();
+        User user2 = Prototype.userB();
         List<User> userList = new ArrayList<>();
         userList.add(user1);
         userList.add(user2);
@@ -52,24 +50,44 @@ class AdminControllerTest {
     }
 
     @Test
+    void testGetAllUsersSortByName() {
+        User user1 = Prototype.userA();
+        User user2 = Prototype.userB();
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+
+        when(userService.getAllSortByName()).thenReturn(userList);
+
+        List<User> result = adminController.getAllUsersSortByName();
+        Assertions.assertEquals(userList, result);
+    }
+
+    @Test
+    void testGetAllUserWithName() {
+        User user1 = Prototype.userA();
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+
+        when(userService.getAllWithName("Aaa")).thenReturn(userList);
+
+        List<User> result = adminController.getAllUserWithName("Aaa");
+        Assertions.assertEquals(userList, result);
+    }
+
+    @Test
     void testTransferByPhone() {
         TransferByPhoneRequest transferByPhoneRequest = Prototype.transferByPhoneRequest();
-        User user1 = Prototype.userAaa();
-        User user2 = Prototype.userName();
+        User user1 = Prototype.userA();
+        User user2 = Prototype.userB();
 
-        UserRequest userRequest1 = Prototype.userRequestAaa();
-        UserRequest userRequest2 = Prototype.userRequestName();
-        userService.registration(userRequest1, false);
-        userService.registration(userRequest2, false);
+        when(userService.isPhoneNumberExist(transferByPhoneRequest.getSenderPhoneNumber())).thenReturn(true);
+        when(userService.getByPhoneNumber(transferByPhoneRequest.getSenderPhoneNumber())).thenReturn(user1);
+        when(cardService.isEnoughBalance(transferByPhoneRequest.getSenderPhoneNumber(), transferByPhoneRequest.getMoney())).thenReturn(true);
 
-        when(userService.getByPhoneNumber("phoneNumber1")).thenReturn(user1);
-        when(userService.isPhoneNumberExist("phoneNumber1")).thenReturn(true);
-        when(cardService.isEnoughBalance("phoneNumber1", 300)).thenReturn(true);
-
-        when(userService.getByPhoneNumber("phoneNumber2")).thenReturn(user2);
-        when(userService.isPhoneNumberExist("phoneNumber2")).thenReturn(true);
-        when(cardService.isEnoughBalance("phoneNumber2", 300)).thenReturn(true);
-        transferService.makeTransfer(user1, user2, transferByPhoneRequest.getMoney());
+        when(userService.isPhoneNumberExist(transferByPhoneRequest.getRecipientPhoneNumber())).thenReturn(true);
+        when(userService.getByPhoneNumber(transferByPhoneRequest.getRecipientPhoneNumber())).thenReturn(user2);
+        when(cardService.isEnoughBalance(transferByPhoneRequest.getRecipientPhoneNumber(), transferByPhoneRequest.getMoney())).thenReturn(true);
 
         ResponseEntity<?> result = adminController.transferByPhone(transferByPhoneRequest);
         Assertions.assertEquals(ResponseEntity.ok(Constants.OK), result);
