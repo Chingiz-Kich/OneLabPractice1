@@ -3,8 +3,6 @@ package com.example.onelabpractice1.controllers;
 import com.example.onelabpractice1.Prototype;
 import com.example.onelabpractice1.constants.Constants;
 import com.example.onelabpractice1.models.Card;
-import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.requests.LoginRequest;
 import com.example.onelabpractice1.requests.UserRequest;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.UserService;
@@ -16,13 +14,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.BDDAssertions.then;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.*;
 

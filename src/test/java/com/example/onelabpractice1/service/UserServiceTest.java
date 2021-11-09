@@ -3,6 +3,7 @@ package com.example.onelabpractice1.service;
 import com.example.onelabpractice1.Prototype;
 import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.User;
+import com.example.onelabpractice1.repository.RoleRepository;
 import com.example.onelabpractice1.repository.UserRepository;
 import com.example.onelabpractice1.requests.UserRequest;
 import org.junit.jupiter.api.Assertions;
@@ -21,8 +22,10 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     @Mock
     UserRepository userRepository;
+    @Mock
+    RoleRepository roleRepository;
     @InjectMocks
-    UserService userService;
+    UserService sut;
 
     @BeforeEach
     void setUp() {
@@ -30,12 +33,46 @@ class UserServiceTest {
     }
 
     @Test
-    void testRegistration() {
+    void testAdminRegistration1() {
         UserRequest userRequest = Prototype.userRequest();
 
         when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
+        when(roleRepository.existsByName("ROLE_ADMIN")).thenReturn(true);
 
-        boolean result = userService.registration(userRequest, true);
+        boolean result = sut.registration(userRequest, true);
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void testAdminRegistration2() {
+        UserRequest userRequest = Prototype.userRequest();
+
+        when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
+        when(roleRepository.existsByName("ROLE_ADMIN")).thenReturn(false);
+
+        boolean result = sut.registration(userRequest, true);
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void testUserRegistration1() {
+        UserRequest userRequest = Prototype.userRequest();
+
+        when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
+        when(roleRepository.existsByName("ROLE_USER")).thenReturn(true);
+
+        boolean result = sut.registration(userRequest, false);
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void testUserRegistration2() {
+        UserRequest userRequest = Prototype.userRequest();
+
+        when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
+        when(roleRepository.existsByName("ROLE_USER")).thenReturn(false);
+
+        boolean result = sut.registration(userRequest, false);
         Assertions.assertTrue(result);
     }
 
@@ -49,7 +86,7 @@ class UserServiceTest {
         when(userRepository.existsByPhoneNumberAndPassword("phoneNumber", "password")).thenReturn(true);
         when(userRepository.findUserByPhoneNumberAndPassword("phoneNumber", "password")).thenReturn(testUser);
 
-        User result = userService.getUserByPhoneNumberAndPassword("phoneNumber", "password");
+        User result = sut.getUserByPhoneNumberAndPassword("phoneNumber", "password");
         Assertions.assertEquals(testUser, result);
     }
 
@@ -61,7 +98,7 @@ class UserServiceTest {
         userListTest.add(userTest);
 
         when(userRepository.findAll()).thenReturn(userListTest);
-        List<User> result = userService.getAllUsers();
+        List<User> result = sut.getAllUsers();
         Assertions.assertEquals(userListTest, result);
     }
 
@@ -76,7 +113,7 @@ class UserServiceTest {
 
         when(userRepository.findAll()).thenReturn(userListTest);
 
-        List<User> result = userService.getAllSortByName();
+        List<User> result = sut.getAllSortByName();
         Assertions.assertEquals(userListTest, result);
     }
 
@@ -91,7 +128,7 @@ class UserServiceTest {
 
         when(userRepository.findAll()).thenReturn(userListTest);
 
-        List<User> result = userService.getAllWithName("name");
+        List<User> result = sut.getAllWithName("name");
 
         userListTest.remove(userTest1);
 
@@ -104,7 +141,7 @@ class UserServiceTest {
 
         when(userRepository.getByPhoneNumber("phoneNumber1")).thenReturn(user1);
 
-        User result = userService.getByPhoneNumber("phoneNumber1");
+        User result = sut.getByPhoneNumber("phoneNumber1");
 
         Assertions.assertEquals(user1, result);
     }
@@ -113,7 +150,7 @@ class UserServiceTest {
     void testIsPhoneNumberExist() {
         when(userRepository.existsByPhoneNumber("phoneNumber1")).thenReturn(true);
 
-        boolean result = userService.isPhoneNumberExist("phoneNumber1");
+        boolean result = sut.isPhoneNumberExist("phoneNumber1");
         Assertions.assertTrue(result);
     }
 
@@ -123,7 +160,7 @@ class UserServiceTest {
 
         when(userRepository.findByPhoneNumber("phoneNumber1")).thenReturn(user1);
 
-        boolean result = userService.addCardToUserByPhoneNumber("phoneNumber1", new Card("newNumber", 0d));
+        boolean result = sut.addCardToUserByPhoneNumber("phoneNumber1", new Card("newNumber", 0d));
         Assertions.assertTrue(result);
     }
 }

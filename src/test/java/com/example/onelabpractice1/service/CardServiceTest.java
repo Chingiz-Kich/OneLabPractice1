@@ -23,7 +23,7 @@ class CardServiceTest {
     @Mock
     UserRepository userRepository;
     @InjectMocks
-    CardService cardService;
+    CardService sut;
 
     @BeforeEach
     void setUp() {
@@ -32,7 +32,7 @@ class CardServiceTest {
 
     @Test
     void testCreateCard() {
-        Card result = cardService.createCard();
+        Card result = sut.createCard();
 
         when(cardRepository.save(result)).thenReturn(result);
         when(cardRepository.findCardByNumber(result.getNumber())).thenReturn(result);
@@ -52,7 +52,7 @@ class CardServiceTest {
 
         when(cardRepository.findAll()).thenReturn(cardList);
 
-        List<Card> result = cardService.getAll();
+        List<Card> result = sut.getAll();
         Assertions.assertEquals(cardList, result);
     }
 
@@ -69,7 +69,7 @@ class CardServiceTest {
 
         cardList.sort(Card.COMPARE_BY_BALANCE);
 
-        List<Card> result = cardService.getAllByBalanceASC();
+        List<Card> result = sut.getAllByBalanceASC();
         Assertions.assertEquals(cardList, result);
     }
 
@@ -80,7 +80,7 @@ class CardServiceTest {
 
         when(cardRepository.findCardByNumber(cardNumber)).thenReturn(card1);
 
-        Card result = cardService.getCardByCardNumber(cardNumber);
+        Card result = sut.getCardByCardNumber(cardNumber);
 
         Assertions.assertEquals(card1, result);
     }
@@ -92,7 +92,7 @@ class CardServiceTest {
 
         when(userRepository.findByPhoneNumber(user1.getPhoneNumber())).thenReturn(user1);
 
-        cardService.depositByPhoneNumber(user1.getPhoneNumber(), 500);
+        sut.depositByPhoneNumber(user1.getPhoneNumber(), 500);
         double result = user1.getCard().getBalance();
 
         Assertions.assertEquals(expectedBalance, result);
@@ -105,7 +105,7 @@ class CardServiceTest {
 
         when(userRepository.findByPhoneNumber(user1.getPhoneNumber())).thenReturn(user1);
 
-        cardService.withdrawByPhoneNumber(user1.getPhoneNumber(), 500);
+        sut.withdrawByPhoneNumber(user1.getPhoneNumber(), 500);
         double result = user1.getCard().getBalance();
 
         Assertions.assertEquals(expectedBalance, result);
@@ -117,7 +117,7 @@ class CardServiceTest {
 
         when(userRepository.getByPhoneNumber(user1.getPhoneNumber())).thenReturn(user1);
 
-        boolean result = cardService.isEnoughBalance(user1.getPhoneNumber(), 500);
+        boolean result = sut.isEnoughBalance(user1.getPhoneNumber(), 500);
         Assertions.assertTrue(result);
     }
 }

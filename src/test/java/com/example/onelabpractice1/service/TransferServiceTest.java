@@ -22,7 +22,7 @@ class TransferServiceTest {
     @Mock
     CardRepository cardRepository;
     @InjectMocks
-    TransferService transferService;
+    TransferService sut;
 
     @BeforeEach
     void setUp() {
@@ -33,7 +33,7 @@ class TransferServiceTest {
     void testMakeTransfer() {
         User user1 = Prototype.userAaa();
         User user2 = Prototype.userName();
-        transferService.makeTransfer(user1, user2, 500);
+        sut.makeTransfer(user1, user2, 500);
     }
 
     @Test
@@ -46,7 +46,7 @@ class TransferServiceTest {
 
         when(transferRepository.findAll()).thenReturn(transferList);
 
-        List<Transfer> result = transferService.getAllTransfersByDate();
+        List<Transfer> result = sut.getAllTransfersByDate();
         transferList.sort(Transfer.COMPARE_BY_DATE);
         Assertions.assertEquals(transferList, result);
     }
@@ -62,7 +62,7 @@ class TransferServiceTest {
         User user1 = Prototype.userAaa();
         User user2 = Prototype.userName();
 
-        List<Transfer> result = transferService.getTransferHistorySenderRecipient(user1, user2);
+        List<Transfer> result = sut.getTransferHistorySenderRecipient(user1, user2);
 
         Assertions.assertEquals(transferList, result);
     }
