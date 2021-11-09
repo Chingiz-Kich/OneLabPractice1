@@ -5,6 +5,7 @@ import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.Role;
 import com.example.onelabpractice1.models.Status;
 import com.example.onelabpractice1.models.User;
+import com.example.onelabpractice1.repository.RoleRepository;
 import com.example.onelabpractice1.repository.UserRepository;
 import com.example.onelabpractice1.requests.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +19,25 @@ import java.util.List;
 @ExceptionChecker
 public class UserService {
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public boolean registration(UserRequest userRequest, boolean isAdmin) {
+        Role adminRole = new Role();
+        adminRole.setName("ROLE_ADMIN");
+        adminRole.setStatus(Status.ACTIVE);
+        roleRepository.save(adminRole);
+
+        Role userRole = new Role();
+        userRole.setName("ROLE_USER");
+        userRole.setStatus(Status.ACTIVE);
+        roleRepository.save(userRole);
+
         if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
             return false;
         }
@@ -32,9 +45,16 @@ public class UserService {
         User user = new User(userRequest.getName(), userRequest.getSurname(), userRequest.getEmail(), userRequest.getPhoneNumber(), userRequest.getPassword());
 
         if (isAdmin) {
-            user.setRole(Role.ADMIN);
+            Role roleUser = roleRepository.findByName("ROLE_ADMIN");
+            List<Role> userRoles = new ArrayList<>();
+            userRoles.add(roleUser);
+            user.setRoles(userRoles);
+
         } else {
-            user.setRole(Role.USER);
+            Role roleUser = roleRepository.findByName("ROLE_USER");
+            List<Role> userRoles = new ArrayList<>();
+            userRoles.add(roleUser);
+            user.setRoles(userRoles);
         }
 
         user.setStatus(Status.ACTIVE);

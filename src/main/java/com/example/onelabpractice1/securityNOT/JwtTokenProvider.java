@@ -1,4 +1,5 @@
-package com.example.onelabpractice1.security;
+/*
+package com.example.onelabpractice1.securityNOT;
 
 import io.jsonwebtoken.*;
 import lombok.extern.java.Log;
@@ -78,6 +79,10 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader(authorizationHeader);
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
+            return bearerToken.substring(7, bearerToken.length());
+        }
+        return null;
     }
-}
+}*/

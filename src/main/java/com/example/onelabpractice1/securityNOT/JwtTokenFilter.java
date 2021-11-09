@@ -1,4 +1,4 @@
-package com.example.onelabpractice1.security;
+/*package com.example.onelabpractice1.securityNOT;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,4 +36,4 @@ public class JwtTokenFilter extends GenericFilterBean {
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
-}
+}*/

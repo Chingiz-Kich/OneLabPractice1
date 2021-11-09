@@ -1,4 +1,5 @@
-package com.example.onelabpractice1.security;
+/*
+package com.example.onelabpractice1.securityNOT;
 
 import com.example.onelabpractice1.models.Status;
 import com.example.onelabpractice1.models.User;
@@ -10,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+// @Data
 public class SecurityUser implements UserDetails {
 
     private final String username;
@@ -72,3 +73,4 @@ public class SecurityUser implements UserDetails {
         );
     }
 }
+*/

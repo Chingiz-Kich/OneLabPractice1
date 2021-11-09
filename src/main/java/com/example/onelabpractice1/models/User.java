@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Comparator;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -25,8 +26,11 @@ public class User {
     private String phoneNumber;
     private String password;
 
-    @Column(name = "role")
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")

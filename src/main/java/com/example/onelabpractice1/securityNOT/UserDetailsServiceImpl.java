@@ -1,4 +1,5 @@
-package com.example.onelabpractice1.security;
+/*
+package com.example.onelabpractice1.securityNOT;
 
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.UserRepository;
@@ -19,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
+    public UserDetailsls loadUserByUsername(String phoneNumber) throws UsernameNotFoundException {
         try {
             User user = userRepository.findByPhoneNumber(phoneNumber);
             return SecurityUser.fromUser(user);
@@ -28,3 +29,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 }
+*/

@@ -1,32 +1,40 @@
 package com.example.onelabpractice1.models;
 
+import lombok.Data;
+import javax.persistence.Id;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+
+import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public enum Role {
-    USER(Stream.of(Permission.DEVELOPERS_READ)
-            .collect(Collectors.toCollection(HashSet::new))),
-    ADMIN(Stream.of(Permission.DEVELOPERS_READ, Permission.DEVELOPERS_WRITE)
-            .collect(Collectors.toCollection(HashSet::new)));
+@Entity
+@Table(name = "roles")
+@Data
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
 
-    Role(Set<Permission> permissions) {
-        this.permissions = permissions;
-    }
+    @Column(name = "name")
+    private String name;
 
-    private final Set<Permission> permissions;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
-    public Set<Permission> getPermissions() {
-        return permissions;
-    }
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private List<User> users;
 
-    public Set<SimpleGrantedAuthority> getAuthorities() {
-        return getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-                .collect(Collectors.toSet());
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id: " + id + ", " +
+                "name: " + name + "}";
     }
 }

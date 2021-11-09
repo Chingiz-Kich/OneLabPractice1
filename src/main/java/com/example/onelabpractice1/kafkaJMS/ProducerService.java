@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-/*@Service*/
+// @Service
 public final class ProducerService {
     private static final Logger logger = LoggerFactory.getLogger(ProducerService.class);
 

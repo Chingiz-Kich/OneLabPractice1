@@ -5,15 +5,17 @@ import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.requests.LoginRequest;
 import com.example.onelabpractice1.requests.UserRequest;
-import com.example.onelabpractice1.security.JwtTokenProvider;
+import com.example.onelabpractice1.security.jwt.JwtTokenProvider;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,24 +73,52 @@ public class AuthController {
     }
 
     @PostMapping("/userLogin")
-    public ResponseEntity<?> userLogin(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            return ResponseEntity.ok(authentication(loginRequest, false));
-        } catch (AuthenticationException ex) {
-            return new ResponseEntity<>("Invalid phone number/password combination", HttpStatus.FORBIDDEN);
+            String phoneNumber = loginRequest.getPhoneNumber();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));
+            User user = userService.getByPhoneNumber(phoneNumber);
+
+            if (user == null) {
+                throw new UsernameNotFoundException("User with phone number: " + phoneNumber + " not found");
+            }
+
+            String token = jwtTokenProvider.createToken(phoneNumber, user.getRoles());
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("phone number ", phoneNumber);
+            response.put("token ", token);
+
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid phone number or password for User account");
         }
     }
 
     @PostMapping("/adminLogin")
     public ResponseEntity<?> adminLogin (@RequestBody @Valid LoginRequest loginRequest) {
         try {
-            return ResponseEntity.ok(authentication(loginRequest, true));
-        } catch (AuthenticationException ex) {
-            return new ResponseEntity<>("Invalid phone number/password combination", HttpStatus.FORBIDDEN);
+            String phoneNumber = loginRequest.getPhoneNumber();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));
+            User user = userService.getByPhoneNumber(phoneNumber);
+
+            if (user == null) {
+                throw new UsernameNotFoundException("Admin with phone number: " + phoneNumber + " not found");
+            }
+
+            String token = jwtTokenProvider.createToken(phoneNumber, user.getRoles());
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put("phone number ", phoneNumber);
+            response.put("token ", token);
+
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid phone number or password for Admin account");
         }
     }
 
-    private Map<Object, Object> authentication(LoginRequest loginRequest, boolean isAdmin) {
+/*    private Map<Object, Object> authentication(LoginRequest loginRequest, boolean isAdmin) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getPhoneNumber(), loginRequest.getPassword()));
         User user = userService.getByPhoneNumber(loginRequest.getPhoneNumber());
         String token = jwtTokenProvider.createToken(loginRequest.getPhoneNumber());
@@ -101,6 +131,5 @@ public class AuthController {
         response.put("User phone number: ", loginRequest.getPhoneNumber());
         response.put("token: ", token);
         return response;
-    }
-
+    }*/
 }

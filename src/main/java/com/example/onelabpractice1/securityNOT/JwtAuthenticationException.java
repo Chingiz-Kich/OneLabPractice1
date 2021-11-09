@@ -1,4 +1,4 @@
-package com.example.onelabpractice1.security;
+/*compackage com.example.onelabpractice1.securityNOT;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -14,4 +14,4 @@ public class JwtAuthenticationException extends AuthenticationException {
         super(msg);
         this.httpStatus = httpStatus;
     }
-}
+}*/
