@@ -1,6 +1,8 @@
 package com.example.onelabpractice1.models;
 
-import lombok.Data;
+import com.example.onelabpractice1.enums.Status;
+import lombok.Getter;
+import lombok.Setter;
 
 
 import javax.persistence.*;
@@ -8,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "roles")
-@Data
+@Getter
+@Setter
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +22,7 @@ public class Role {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column
     private Status status;
 
     @OneToMany

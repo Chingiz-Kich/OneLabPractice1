@@ -1,7 +1,7 @@
 package com.example.onelabpractice1.controllers;
 
 import com.example.onelabpractice1.Prototype;
-import com.example.onelabpractice1.constants.Constants;
+import com.example.onelabpractice1.enums.Response;
 import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.Role;
 import com.example.onelabpractice1.models.User;
@@ -54,7 +54,7 @@ class AuthControllerTest {
         when(userService.addCardToUserByPhoneNumber(userRequest1.getPhoneNumber(), card1)).thenReturn(true);
 
         ResponseEntity<?> result = authController.registerUser(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.USER_REGISTERED_SUCCESSFULLY), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.USER_REGISTERED_SUCCESSFULLY), result);
     }
 
     @Test
@@ -64,7 +64,7 @@ class AuthControllerTest {
         when(userService.registration(userRequest1, false)).thenReturn(false);
 
         ResponseEntity<?> result = authController.registerUser(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.FAILED), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.FAILED), result);
     }
 
     @Test
@@ -77,7 +77,7 @@ class AuthControllerTest {
         when(userService.addCardToUserByPhoneNumber(userRequest1.getPhoneNumber(), card1)).thenReturn(true);
 
         ResponseEntity<?> result = authController.registerAdmin(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.ADMIN_REGISTERED_SUCCESSFULLY), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.ADMIN_REGISTERED_SUCCESSFULLY), result);
     }
 
     @Test
@@ -87,7 +87,7 @@ class AuthControllerTest {
         when(userService.registration(userRequest1, false)).thenReturn(false);
 
         ResponseEntity<?> result = authController.registerUser(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.FAILED), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.FAILED), result);
     }
 
     @Test
@@ -96,11 +96,11 @@ class AuthControllerTest {
         User user1 = Prototype.userA();
 
         when(userService.getByPhoneNumberAndRole(loginRequest1.getPhoneNumber(), "ROLE_USER")).thenReturn(user1);
-        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn("token");
+        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn(null);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("phone number ", loginRequest1.getPhoneNumber());
-        response.put("token ", "token");
+        response.put("token ", null);
 
 
         ResponseEntity<?> result = authController.userLogin(loginRequest1);
@@ -113,11 +113,11 @@ class AuthControllerTest {
         User user1 = Prototype.userA();
 
         when(userService.getByPhoneNumberAndRole(loginRequest1.getPhoneNumber(), "ROLE_ADMIN")).thenReturn(user1);
-        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn("token");
+        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn(null);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("phone number ", loginRequest1.getPhoneNumber());
-        response.put("token ", "token");
+        response.put("token ", null);
 
         ResponseEntity<?> result = authController.adminLogin(loginRequest1);
         Assertions.assertEquals(ResponseEntity.ok(response), result);

@@ -26,7 +26,7 @@ public class Card {
         this.balance = balance;
     }
 
-    public static Comparator<Card> COMPARE_BY_BALANCE = Comparator.comparing(Card::getBalance);
+    public static final Comparator<Card> COMPARE_BY_BALANCE = Comparator.comparing(Card::getBalance);
 
     @Override
     public String toString() {

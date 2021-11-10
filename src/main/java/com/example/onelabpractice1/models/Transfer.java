@@ -32,7 +32,7 @@ public class Transfer {
         this.transferDate = transferDate;
     }
 
-    public static Comparator<Transfer> COMPARE_BY_DATE = Comparator.comparing(Transfer::getTransferDate);
+    public static final Comparator<Transfer> COMPARE_BY_DATE = Comparator.comparing(Transfer::getTransferDate);
 
     @Override
     public String toString() {

@@ -20,7 +20,9 @@ public class MyAspects {
     private final Logger logger = Logger.getLogger(MyAspects.class);
 
     @Pointcut("execution(* com.example.onelabpractice1.controllers.AuthController.*(..))")
-    private void AuthControllerLog() { }
+    private void AuthControllerLog() {
+        // Only for pointCut
+    }
 
     @Before("AuthControllerLog()")
     public void logBefore(JoinPoint joinPoint) {
@@ -82,13 +84,13 @@ public class MyAspects {
 
     @Before("@annotation(com.example.onelabpractice1.aspects.GetInfoBeforeExecute)")
     public void beforeAspect(JoinPoint joinPoint) {
-        System.out.println("METHOD " + joinPoint.getSignature().getName() +
+        logger.debug("METHOD " + joinPoint.getSignature().getName() +
                 " FROM " + joinPoint.getSignature().getDeclaringTypeName() +  " STARTS EXECUTING");
     }
 
     @AfterThrowing (value = "@annotation(com.example.onelabpractice1.aspects.ExceptionChecker)", throwing = "ex")
     public void ExceptionChecker(JoinPoint joinPoint, Exception ex) {
-        System.out.println(("EXCEPTION IS DEFINED IN '" + joinPoint.getSignature().getName() +
+        logger.debug(("EXCEPTION IS DEFINED IN '" + joinPoint.getSignature().getName() +
                 "' METHOD, EXCEPTION: " + ex));
     }
 }

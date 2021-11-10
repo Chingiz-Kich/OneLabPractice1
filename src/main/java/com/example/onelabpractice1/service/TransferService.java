@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class TransferService {
-    private TransferRepository transferRepository;
-    private CardRepository cardRepository;
+    private final TransferRepository transferRepository;
+    private final CardRepository cardRepository;
 
     @Autowired TransferService(TransferRepository transferRepository, CardRepository cardRepository) {
         this.transferRepository = transferRepository;
@@ -41,19 +42,17 @@ public class TransferService {
     }
 
     public List<Transfer> getAllTransfersByDate() {
-        List<Transfer> transfersList = transferRepository.findAll();
-        transfersList.sort(Transfer.COMPARE_BY_DATE);
-        return transfersList;
+        return transferRepository.findAll()
+                .stream()
+                .sorted(Transfer.COMPARE_BY_DATE)
+                .collect(toList());
     }
 
-    public List<Transfer> getTransferHistorySenderRecipient(User sender, User recipient) {
-        List<Transfer> transfersList = new ArrayList<>();
-
-        for (Transfer transfer : transferRepository.findAll()) {
-            if (transfer.getSenderPhoneNumber().equals(sender.getPhoneNumber()) && transfer.getRecipientPhoneNumber().equals(recipient.getPhoneNumber())) {
-                transfersList.add(transfer);
-            }
-        }
-        return transfersList;
+    public List<Transfer> getTransferHistorySenderRecipient(String senderPhoneNumber, String recipientPhoneNumber) {
+        return transferRepository.findAll()
+                .stream()
+                .filter(transfer -> transfer.getSenderPhoneNumber().equals(senderPhoneNumber)
+                        && transfer.getRecipientPhoneNumber().equals(recipientPhoneNumber))
+                .collect(toList());
     }
 }

@@ -1,7 +1,7 @@
 package com.example.onelabpractice1.controllers;
 
 import com.example.onelabpractice1.Prototype;
-import com.example.onelabpractice1.constants.Constants;
+import com.example.onelabpractice1.enums.Response;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.requests.TransferByPhoneRequest;
 import com.example.onelabpractice1.service.CardService;
@@ -90,7 +90,7 @@ class AdminControllerTest {
         when(cardService.isEnoughBalance(transferByPhoneRequest.getRecipientPhoneNumber(), transferByPhoneRequest.getMoney())).thenReturn(true);
 
         ResponseEntity<?> result = adminController.transferByPhone(transferByPhoneRequest);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.OK), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.OK), result);
     }
 }
 

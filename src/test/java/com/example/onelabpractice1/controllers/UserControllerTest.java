@@ -1,9 +1,8 @@
 package com.example.onelabpractice1.controllers;
 
 import com.example.onelabpractice1.Prototype;
-import com.example.onelabpractice1.constants.Constants;
+import com.example.onelabpractice1.enums.Response;
 import com.example.onelabpractice1.requests.DepositRequest;
-import com.example.onelabpractice1.requests.UserRequest;
 import com.example.onelabpractice1.requests.WithdrawRequest;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.UserService;
@@ -37,7 +36,7 @@ class UserControllerTest {
         when(userService.isPhoneNumberExist(depositRequest1.getPhoneNumber())).thenReturn(true);
 
         ResponseEntity<?> result = userController.deposit(depositRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.OK), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.OK), result);
     }
 
     @Test
@@ -47,7 +46,7 @@ class UserControllerTest {
         when(userService.isPhoneNumberExist(depositRequest1.getPhoneNumber())).thenReturn(false);
 
         ResponseEntity<?> result = userController.deposit(depositRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.PHONE_NUMBER_NOT_FOUND), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.PHONE_NUMBER_NOT_FOUND), result);
     }
 
     @Test
@@ -58,7 +57,7 @@ class UserControllerTest {
         when(cardService.isEnoughBalance(withdrawRequest1.getPhoneNumber(), withdrawRequest1.getMoney())).thenReturn(true);
 
         ResponseEntity<?> result = userController.withdraw(withdrawRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.OK), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.OK), result);
     }
 
     @Test
@@ -68,7 +67,7 @@ class UserControllerTest {
         when(userService.isPhoneNumberExist(withdrawRequest1.getPhoneNumber())).thenReturn(false);
 
         ResponseEntity<?> result = userController.withdraw(withdrawRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.PHONE_NUMBER_NOT_FOUND), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.PHONE_NUMBER_NOT_FOUND), result);
     }
 
     @Test
@@ -79,7 +78,7 @@ class UserControllerTest {
         when(cardService.isEnoughBalance(withdrawRequest1.getPhoneNumber(), withdrawRequest1.getMoney())).thenReturn(false);
 
         ResponseEntity<?> result = userController.withdraw(withdrawRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Constants.BALANCE_IS_NOT_ENOUGH), result);
+        Assertions.assertEquals(ResponseEntity.ok(Response.BALANCE_IS_NOT_ENOUGH), result);
     }
 }
 

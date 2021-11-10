@@ -1,5 +1,6 @@
 package com.example.onelabpractice1;
 
+import com.example.onelabpractice1.enums.Status;
 import com.example.onelabpractice1.helper.CardHelper;
 import com.example.onelabpractice1.models.*;
 import com.example.onelabpractice1.requests.*;
@@ -14,7 +15,7 @@ public class Prototype {
     }
 
     public static User userB() {
-        User userTest2 = new User("Bbb",  "Bsurname", "email", "phoneNumber2", "password");
+        User userTest2 = new User("Bbb",  "BSurname", "email", "phoneNumber2", "password");
         userTest2.setCard(new Card("cardNumber", 500));
         return userTest2;
     }
@@ -66,16 +67,6 @@ public class Prototype {
         return userRequest;
     }
 
-    public static UserRequest userRequestB() {
-        UserRequest userRequest = new UserRequest();
-        userRequest.setName("Bbb");
-        userRequest.setSurname("BSurname");
-        userRequest.setEmail("email");
-        userRequest.setPhoneNumber("phoneNumber2");
-        userRequest.setPassword("password");
-        return userRequest;
-    }
-
     public static DepositRequest depositRequestA() {
         DepositRequest depositRequest = new DepositRequest();
         depositRequest.setPhoneNumber("phoneNumber1");
@@ -102,14 +93,6 @@ public class Prototype {
         Role role = new Role();
         role.setId(1L);
         role.setName("ROLE_USER");
-        role.setStatus(Status.ACTIVE);
-        return role;
-    }
-
-    public static Role roleAdmin() {
-        Role role = new Role();
-        role.setId(1L);
-        role.setName("ROLE_ADMIN");
         role.setStatus(Status.ACTIVE);
         return role;
     }

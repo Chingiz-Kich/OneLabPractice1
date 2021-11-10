@@ -1,5 +1,6 @@
 package com.example.onelabpractice1.service;
 
+import com.example.onelabpractice1.constants.Constant;
 import com.example.onelabpractice1.helper.CardHelper;
 import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.repository.CardRepository;
@@ -8,11 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class CardService {
-    private CardRepository cardRepository;
-    private UserRepository userRepository;
+    private final CardRepository cardRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public CardService(CardRepository cardRepository, UserRepository userRepository) {
@@ -32,24 +37,25 @@ public class CardService {
     }
 
     public List<Card> getAllByBalanceASC() {
-        List<Card> cards = getAll();
-        cards.sort(Card.COMPARE_BY_BALANCE);
-        return cards;
+        return cardRepository.findAll()
+                .stream()
+                .sorted(Card.COMPARE_BY_BALANCE)
+                .collect(toList());
     }
 
     public Card getCardByCardNumber(String cardNumber) {
-        return cardRepository.findCardByNumber(cardNumber);
+        return Optional.of(cardRepository.findCardByNumber(cardNumber)).orElseThrow(() -> new NoSuchElementException(Constant.CARD_NOT_FOUND_EXCEPTION));
     }
 
 
     public void depositByPhoneNumber(String phoneNumber, double money) {
-        Card card = userRepository.findByPhoneNumber(phoneNumber).getCard();
+        Card card = Optional.of(userRepository.findByPhoneNumber(phoneNumber).getCard()).orElseThrow(() -> new NoSuchElementException(Constant.CARD_NOT_FOUND_EXCEPTION));
         card.setBalance(card.getBalance() + money);
         cardRepository.save(card);
     }
 
     public void withdrawByPhoneNumber(String phoneNumber, double money) {
-        Card card = userRepository.findByPhoneNumber(phoneNumber).getCard();
+        Card card = Optional.of(userRepository.findByPhoneNumber(phoneNumber).getCard()).orElseThrow(() -> new NoSuchElementException(Constant.CARD_NOT_FOUND_EXCEPTION));
         card.setBalance(card.getBalance() - money);
         cardRepository.save(card);
     }

@@ -1,7 +1,7 @@
 package com.example.onelabpractice1.security.jwt;
 
 import com.example.onelabpractice1.models.Role;
-import com.example.onelabpractice1.models.Status;
+import com.example.onelabpractice1.enums.Status;
 import com.example.onelabpractice1.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public final class JwtUserFactory {
 
-    public JwtUserFactory() {
+    private JwtUserFactory() {
     }
 
     public static JwtUser create(User user) {

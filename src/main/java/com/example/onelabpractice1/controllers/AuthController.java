@@ -1,6 +1,6 @@
 package com.example.onelabpractice1.controllers;
 
-import com.example.onelabpractice1.constants.Constants;
+import com.example.onelabpractice1.enums.Response;
 import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.requests.LoginRequest;
@@ -45,34 +45,34 @@ public class AuthController {
     }
 
     @PostMapping("/userRegister")
-    public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequest userRequest) {
+    public ResponseEntity<Response> registerUser(@RequestBody @Valid UserRequest userRequest) {
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         boolean result = userService.registration(userRequest, false);
         if (!result) {
-            return ResponseEntity.ok(Constants.FAILED);
+            return ResponseEntity.ok(Response.FAILED);
         }
         Card card = cardService.createCard();
         userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
-        return ResponseEntity.ok(Constants.USER_REGISTERED_SUCCESSFULLY);
+        return ResponseEntity.ok(Response.USER_REGISTERED_SUCCESSFULLY);
     }
 
     @PostMapping("/adminRegister")
-    public ResponseEntity<?> registerAdmin(@RequestBody @Valid UserRequest userRequest) {
+    public ResponseEntity<Response> registerAdmin(@RequestBody @Valid UserRequest userRequest) {
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         boolean result = userService.registration(userRequest, true);
         if (!result) {
-            return ResponseEntity.ok(Constants.FAILED);
+            return ResponseEntity.ok(Response.FAILED);
         }
 
         Card card = cardService.createCard();
         userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
-        return ResponseEntity.ok(Constants.ADMIN_REGISTERED_SUCCESSFULLY);
+        return ResponseEntity.ok(Response.ADMIN_REGISTERED_SUCCESSFULLY);
     }
 
     @PostMapping("/userLogin")
-    public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<Object, Object>> userLogin(@RequestBody LoginRequest loginRequest) {
         try {
             String phoneNumber = loginRequest.getPhoneNumber();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));
@@ -95,7 +95,7 @@ public class AuthController {
     }
 
     @PostMapping("/adminLogin")
-    public ResponseEntity<?> adminLogin (@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<Map<Object, Object>> adminLogin (@RequestBody @Valid LoginRequest loginRequest) {
         try {
             String phoneNumber = loginRequest.getPhoneNumber();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));

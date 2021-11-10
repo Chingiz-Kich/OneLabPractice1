@@ -1,9 +1,8 @@
-package com.example.onelabpractice1.kafkaJMS;
+package com.example.onelabpractice1.kafka_jms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
 
 // @Service
 public final class ConsumerService {

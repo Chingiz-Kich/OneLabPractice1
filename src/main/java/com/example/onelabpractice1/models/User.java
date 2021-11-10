@@ -1,5 +1,6 @@
 package com.example.onelabpractice1.models;
 
+import com.example.onelabpractice1.enums.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class User {
     private Role role;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "status")
+    @Column
     private Status status;
 
     @OneToOne(targetEntity = Card.class)
@@ -43,7 +44,7 @@ public class User {
         this.password = password;
     }
 
-    public static Comparator<User> COMPARE_BY_NAME = Comparator.comparing(User::getName);
+    public static final Comparator<User> COMPARE_BY_NAME = Comparator.comparing(User::getName);
 
     @Override
     public String toString() {

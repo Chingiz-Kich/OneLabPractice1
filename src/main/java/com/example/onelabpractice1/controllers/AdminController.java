@@ -1,7 +1,6 @@
 package com.example.onelabpractice1.controllers;
 
-
-import com.example.onelabpractice1.constants.Constants;
+import com.example.onelabpractice1.enums.Response;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.requests.TransferByPhoneRequest;
 import com.example.onelabpractice1.service.CardService;
@@ -45,18 +44,18 @@ public class AdminController {
     }
 
     @PostMapping("/transferByPhoneNumber")
-    public ResponseEntity<?> transferByPhone(@RequestBody TransferByPhoneRequest transfer) {
+    public ResponseEntity<Response> transferByPhone(@RequestBody TransferByPhoneRequest transfer) {
         if (!userService.isPhoneNumberExist(transfer.getSenderPhoneNumber()) || !userService.isPhoneNumberExist(transfer.getRecipientPhoneNumber())) {
-            return ResponseEntity.ok(Constants.PHONE_NUMBER_NOT_FOUND);
+            return ResponseEntity.ok(Response.PHONE_NUMBER_NOT_FOUND);
         }
 
         if (!cardService.isEnoughBalance(transfer.getSenderPhoneNumber(), transfer.getMoney())) {
-            return ResponseEntity.ok(Constants.BALANCE_IS_NOT_ENOUGH);
+            return ResponseEntity.ok(Response.PHONE_ALREADY_EXIST);
         }
 
         User u1 = userService.getByPhoneNumber(transfer.getSenderPhoneNumber());
         User u2 = userService.getByPhoneNumber(transfer.getRecipientPhoneNumber());
         transferService.makeTransfer(u1, u2, transfer.getMoney());
-        return ResponseEntity.ok(Constants.OK);
+        return ResponseEntity.ok(Response.OK);
     }
 }
