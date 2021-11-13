@@ -3,7 +3,6 @@ package com.example.onelabpractice1.controllers;
 import com.example.onelabpractice1.Prototype;
 import com.example.onelabpractice1.enums.Response;
 import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.requests.TransferByPhoneRequest;
 import com.example.onelabpractice1.requests.UpdateRequest;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.TransferService;
@@ -11,6 +10,8 @@ import com.example.onelabpractice1.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -77,24 +78,6 @@ class AdminControllerTest {
     }
 
     @Test
-    void testTransferByPhone() {
-        TransferByPhoneRequest transferByPhoneRequest = Prototype.transferByPhoneRequest();
-        User user1 = Prototype.userA();
-        User user2 = Prototype.userB();
-
-        when(userService.isPhoneNumberExist(transferByPhoneRequest.getSenderPhoneNumber())).thenReturn(true);
-        when(userService.getByPhoneNumber(transferByPhoneRequest.getSenderPhoneNumber())).thenReturn(user1);
-        when(cardService.isEnoughBalance(transferByPhoneRequest.getSenderPhoneNumber(), transferByPhoneRequest.getMoney())).thenReturn(true);
-
-        when(userService.isPhoneNumberExist(transferByPhoneRequest.getRecipientPhoneNumber())).thenReturn(true);
-        when(userService.getByPhoneNumber(transferByPhoneRequest.getRecipientPhoneNumber())).thenReturn(user2);
-        when(cardService.isEnoughBalance(transferByPhoneRequest.getRecipientPhoneNumber(), transferByPhoneRequest.getMoney())).thenReturn(true);
-
-        ResponseEntity<?> result = sut.transferByPhone(transferByPhoneRequest);
-        Assertions.assertEquals(ResponseEntity.ok(Response.OK), result);
-    }
-
-    @Test
     void testUpdateUser() {
         UpdateRequest updateRequest = mock(UpdateRequest.class);
 
@@ -104,16 +87,20 @@ class AdminControllerTest {
         verify(userService, times(1)).updateUser(updateRequest);
     }
 
-    @Test
-    void testDeleteUser() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testDeleteUser(boolean isPhoneNumberExist) {
         User user = mock(User.class);
 
-        when(userService.isPhoneNumberExist("phoneNumber")).thenReturn(true);
+        when(userService.isPhoneNumberExist("phoneNumber")).thenReturn(isPhoneNumberExist);
         when(userService.getByPhoneNumber("phoneNumber")).thenReturn(user);
 
-        sut.delete("phoneNumber");
-        verify(userService, times(1)).deleteUser("phoneNumber");
-        verify(cardService, times(1)).deleteCard(user.getCard());
+        ResponseEntity<?> result = sut.delete("phoneNumber");
+        if (isPhoneNumberExist) {
+            Assertions.assertEquals(ResponseEntity.ok(Response.DELETED_SUCCESSFULLY), result);
+        } else {
+            Assertions.assertEquals(ResponseEntity.ok(Response.PHONE_NUMBER_NOT_FOUND), result);
+        }
     }
 }
 

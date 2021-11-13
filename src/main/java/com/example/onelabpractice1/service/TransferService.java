@@ -2,7 +2,6 @@ package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.models.Transfer;
 import com.example.onelabpractice1.models.User;
-import com.example.onelabpractice1.repository.CardRepository;
 import com.example.onelabpractice1.repository.TransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +15,9 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class TransferService {
     private final TransferRepository transferRepository;
-    private final CardRepository cardRepository;
 
-    @Autowired TransferService(TransferRepository transferRepository, CardRepository cardRepository) {
+    @Autowired TransferService(TransferRepository transferRepository) {
         this.transferRepository = transferRepository;
-        this.cardRepository = cardRepository;
     }
 
     public void makeTransfer(User sender, User recipient, double money) {
@@ -29,9 +26,6 @@ public class TransferService {
 
         double recipientBalance = recipient.getCard().getBalance();
         recipient.getCard().setBalance(recipientBalance + money);
-
-        cardRepository.updateBalance(sender.getCard().getNumber(), senderBalance);
-        cardRepository.updateBalance(recipient.getCard().getNumber(), recipientBalance);
 
         Transfer transfer = new Transfer();
         transfer.setSenderPhoneNumber(sender.getPhoneNumber());

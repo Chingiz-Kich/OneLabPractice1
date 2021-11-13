@@ -9,13 +9,19 @@ import java.util.*;
 
 public class Prototype {
     public static User userA() {
-        User userTest1 = new User("Aaa", "ASurname", "email", "phoneNumber1", "password");
+        User userTest1 = new User("Aaa", "ASurname", "email", "phoneNumber1", "password", false);
         userTest1.setCard(new Card("cardA", 500));
+        Role role = new Role();
+        role.setName("ROLE_USER");
+        List<User> userList = new ArrayList<>();
+        userList.add(userTest1);
+        role.setUsers(userList);
+        userTest1.setRole(role);
         return userTest1;
     }
 
     public static User userB() {
-        User userTest2 = new User("Bbb",  "BSurname", "email", "phoneNumber2", "password");
+        User userTest2 = new User("Bbb",  "BSurname", "email", "phoneNumber2", "password", false);
         userTest2.setCard(new Card("cardNumber", 500));
         return userTest2;
     }
@@ -63,6 +69,7 @@ public class Prototype {
         userRequest.setEmail("email");
         userRequest.setPhoneNumber("phoneNumber1");
         userRequest.setPassword("password");
+        userRequest.setIsAdmin(false);
         return userRequest;
     }
 

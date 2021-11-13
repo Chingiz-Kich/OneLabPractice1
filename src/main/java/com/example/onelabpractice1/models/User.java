@@ -25,6 +25,7 @@ public class User {
     private String email;
     private String phoneNumber;
     private String password;
+    private Boolean isAdmin;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Role role;
@@ -36,12 +37,13 @@ public class User {
     @OneToOne(targetEntity = Card.class)
     private Card card;
 
-    public User(String name, String surname, String email, String phoneNumber, String password) {
+    public User(String name, String surname, String email, String phoneNumber, String password, Boolean isAdmin) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
+        this.isAdmin = isAdmin;
     }
 
     public static final Comparator<User> COMPARE_BY_NAME = Comparator.comparing(User::getName);

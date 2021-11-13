@@ -31,14 +31,14 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
-    public boolean registration(UserRequest userRequest, boolean isAdmin) {
+    public boolean registration(UserRequest userRequest) {
         if (userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())) {
             return false;
         }
 
-        User user = new User(userRequest.getName(), userRequest.getSurname(), userRequest.getEmail(), userRequest.getPhoneNumber(), userRequest.getPassword());
+        User user = new User(userRequest.getName(), userRequest.getSurname(), userRequest.getEmail(), userRequest.getPhoneNumber(), userRequest.getPassword(), userRequest.getIsAdmin());
 
-        if (isAdmin) {
+        if (userRequest.getIsAdmin()) {
             if (!roleRepository.existsByName(Constant.ROLE_ADMIN)) {
                 Role adminRole = new Role();
                 adminRole.setName(Constant.ROLE_ADMIN);

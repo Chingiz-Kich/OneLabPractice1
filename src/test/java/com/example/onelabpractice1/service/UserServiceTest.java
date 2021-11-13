@@ -36,9 +36,10 @@ class UserServiceTest {
 
     private static Stream<Arguments> adminOrUser() {
         return Stream.of(
-                Arguments.of(true, false),
-                Arguments.of(false, true),
-                Arguments.of(false, false)
+                Arguments.of(true, true, false),
+                Arguments.of(true, false, true),
+                Arguments.of(true, false, false),
+                Arguments.of(false, true, true)
         );
     }
 
@@ -49,15 +50,20 @@ class UserServiceTest {
 
     @ParameterizedTest
     @MethodSource("adminOrUser")
-    void testAdminRegistration1(boolean isUser, boolean isAdmin) {
-        UserRequest userRequest = Prototype.userRequest();
+    void testRegistration(boolean existPhoneNumber, boolean isUser, boolean isAdmin) {
+        UserRequest userRequest = Prototype.userRequestA();
+        User user = Prototype.userA();
 
-        when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
-        when(roleRepository.existsByName("ROLE_ADMIN")).thenReturn(isAdmin);
-        when(roleRepository.existsByName("ROLE_USER")).thenReturn(isUser);
+        when(userRepository.existsByPhoneNumber(userRequest.getPhoneNumber())).thenReturn(!existPhoneNumber);
+        when(roleRepository.existsByName(user.getRole().getName())).thenReturn(isAdmin);
+        when(roleRepository.existsByName(user.getRole().getName())).thenReturn(isUser);
 
-        boolean result = sut.registration(userRequest, isAdmin);
-        Assertions.assertTrue(result);
+        boolean result = sut.registration(userRequest);
+        if (existPhoneNumber) {
+            Assertions.assertTrue(result);
+        } else {
+            Assertions.assertFalse(result);
+        }
     }
 
     @Test

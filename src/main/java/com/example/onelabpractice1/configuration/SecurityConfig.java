@@ -15,6 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String ADMIN = "ADMIN";
+    private static final String USER = "USER";
+
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
@@ -37,10 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/transfer/**").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasRole(ADMIN)
+                .antMatchers("/transfer/**").hasRole(ADMIN)
+                .antMatchers("/user/**").hasAnyRole(ADMIN, USER)
                 .antMatchers("/transactional/**").permitAll()
-                .antMatchers("/hello/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));

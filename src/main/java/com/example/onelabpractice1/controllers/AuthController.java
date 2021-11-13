@@ -41,42 +41,36 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/userRegister")
-    public ResponseEntity<Response> registerUser(@RequestBody @Valid UserRequest userRequest) {
+    @PostMapping("/registration")
+    public ResponseEntity<Response> registration(@RequestBody @Valid UserRequest userRequest) {
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-        boolean result = userService.registration(userRequest, false);
+        boolean result = userService.registration(userRequest);
+
         if (!result) {
             return ResponseEntity.ok(Response.FAILED);
         }
         Card card = cardService.createCard();
         userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
-        return ResponseEntity.ok(Response.USER_REGISTERED_SUCCESSFULLY);
+
+        return ResponseEntity.ok(Response.REGISTRATION_COMPLETE_SUCCESSFULLY);
     }
 
-    @PostMapping("/adminRegister")
-    public ResponseEntity<Response> registerAdmin(@RequestBody @Valid UserRequest userRequest) {
-        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-
-        boolean result = userService.registration(userRequest, true);
-        if (!result) {
-            return ResponseEntity.ok(Response.FAILED);
-        }
-
-        Card card = cardService.createCard();
-        userService.addCardToUserByPhoneNumber(userRequest.getPhoneNumber(), card);
-        return ResponseEntity.ok(Response.ADMIN_REGISTERED_SUCCESSFULLY);
-    }
-
-    @PostMapping("/userLogin")
+    @PostMapping("/login")
     public ResponseEntity<Map<Object, Object>> userLogin(@RequestBody LoginRequest loginRequest) {
         try {
             String phoneNumber = loginRequest.getPhoneNumber();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));
-            User user = userService.getByPhoneNumberAndRole(phoneNumber, "ROLE_USER");
+
+            User user;
+            if (loginRequest.isAdmin()) {
+                user = userService.getByPhoneNumberAndRole(phoneNumber, "ROLE_ADMIN");
+            } else {
+                user = userService.getByPhoneNumberAndRole(phoneNumber, "ROLE_USER");
+            }
 
             if (user == null) {
-                throw new UsernameNotFoundException("User with phone number: " + phoneNumber + " not found");
+                throw new UsernameNotFoundException("Phone number: " + phoneNumber + " not found");
             }
 
             String token = jwtTokenProvider.createToken(phoneNumber, user.getRole());
@@ -88,29 +82,6 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid phone number or password for User account");
-        }
-    }
-
-    @PostMapping("/adminLogin")
-    public ResponseEntity<Map<Object, Object>> adminLogin (@RequestBody @Valid LoginRequest loginRequest) {
-        try {
-            String phoneNumber = loginRequest.getPhoneNumber();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(phoneNumber, loginRequest.getPassword()));
-            User user = userService.getByPhoneNumberAndRole(phoneNumber, "ROLE_ADMIN");
-
-            if (user == null) {
-                throw new UsernameNotFoundException("Admin with phone number: " + phoneNumber + " not found");
-            }
-
-            String token = jwtTokenProvider.createToken(phoneNumber, user.getRole());
-
-            Map<Object, Object> response = new HashMap<>();
-            response.put("phone number ", phoneNumber);
-            response.put("token ", token);
-
-            return ResponseEntity.ok(response);
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid phone number or password for Admin account");
         }
     }
 }

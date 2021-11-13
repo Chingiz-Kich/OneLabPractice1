@@ -15,6 +15,7 @@ public class JwtUser implements UserDetails {
     private final String email;
     private final String phoneNumber;
     private final String password;
+    private final Boolean isAdmin;
     private final boolean enabled;
     private final Collection<? extends GrantedAuthority> authorities;
 
@@ -25,6 +26,7 @@ public class JwtUser implements UserDetails {
             String email,
             String phoneNumber,
             String password,
+            Boolean isAdmin,
             Collection<? extends GrantedAuthority> authorities,
             boolean enabled
 
@@ -37,6 +39,7 @@ public class JwtUser implements UserDetails {
         this.password = password;
         this.authorities = authorities;
         this.enabled = enabled;
+        this.isAdmin = isAdmin;
     }
 
     @JsonIgnore

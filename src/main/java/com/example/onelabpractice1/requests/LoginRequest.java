@@ -16,4 +16,7 @@ public class LoginRequest {
     @NotNull(message = "Password cannot be null")
     @NotEmpty(message = "Password cannot be empty")
     private String password;
+
+    @NotNull(message = "Field cannot be null")
+    private boolean admin;
 }

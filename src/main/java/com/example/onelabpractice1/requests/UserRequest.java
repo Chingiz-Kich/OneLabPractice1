@@ -30,6 +30,9 @@ public class UserRequest {
     @NotEmpty(message = "Password cannot be empty")
     private String password;
 
+    @NotNull(message = "Field cannot be null")
+    private Boolean isAdmin;
+
     public String getName() {
         return name;
     }
