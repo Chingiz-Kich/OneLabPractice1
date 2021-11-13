@@ -20,4 +20,6 @@ public interface CardRepository extends CrudRepository<Card, String> {
     @Modifying
     @Query(value = "UPDATE cards SET balance = (:money) WHERE number = (:cardNumber)", nativeQuery = true)
     void updateBalance(@Param("cardNumber") String cardNumber, @Param("money")double money);
+
+    void deleteCardByNumber(String number);
 }

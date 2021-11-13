@@ -20,4 +20,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findAll();
 
     User findByPhoneNumberAndRole(String phoneNumber, Role role);
+
+    void deleteByPhoneNumber(String phoneNumber);
 }

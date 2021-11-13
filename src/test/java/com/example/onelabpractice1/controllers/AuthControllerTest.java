@@ -13,6 +13,8 @@ import com.example.onelabpractice1.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -44,50 +46,43 @@ class AuthControllerTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    void testRegisterUser() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testRegisterUser(boolean registerSuccess) {
         UserRequest userRequest1 = Prototype.userRequestA();
         Card card1 = Prototype.createCard1();
 
-        when(userService.registration(userRequest1, false)).thenReturn(true);
+        when(userService.registration(userRequest1, false)).thenReturn(registerSuccess);
+
         when(cardService.createCard()).thenReturn(card1);
         when(userService.addCardToUserByPhoneNumber(userRequest1.getPhoneNumber(), card1)).thenReturn(true);
 
         ResponseEntity<?> result = authController.registerUser(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Response.USER_REGISTERED_SUCCESSFULLY), result);
+
+        if (registerSuccess) {
+            Assertions.assertEquals(ResponseEntity.ok(Response.USER_REGISTERED_SUCCESSFULLY), result);
+        } else {
+            Assertions.assertEquals(ResponseEntity.ok(Response.FAILED), result);
+        }
     }
 
-    @Test
-    void testUserRegisterFail() {
-        UserRequest userRequest1 = Prototype.userRequestA();
-
-        when(userService.registration(userRequest1, false)).thenReturn(false);
-
-        ResponseEntity<?> result = authController.registerUser(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Response.FAILED), result);
-    }
-
-    @Test
-    void testRegisterAdmin() {
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    void testRegisterAdmin(boolean registerSuccess) {
         UserRequest userRequest1 = Prototype.userRequestA();
         Card card1 = Prototype.createCard1();
 
-        when(userService.registration(userRequest1, true)).thenReturn(true);
+        when(userService.registration(userRequest1, true)).thenReturn(registerSuccess);
         when(cardService.createCard()).thenReturn(card1);
         when(userService.addCardToUserByPhoneNumber(userRequest1.getPhoneNumber(), card1)).thenReturn(true);
 
         ResponseEntity<?> result = authController.registerAdmin(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Response.ADMIN_REGISTERED_SUCCESSFULLY), result);
-    }
 
-    @Test
-    void testAdminRegisterFail() {
-        UserRequest userRequest1 = Prototype.userRequestA();
-
-        when(userService.registration(userRequest1, false)).thenReturn(false);
-
-        ResponseEntity<?> result = authController.registerUser(userRequest1);
-        Assertions.assertEquals(ResponseEntity.ok(Response.FAILED), result);
+        if (registerSuccess) {
+            Assertions.assertEquals(ResponseEntity.ok(Response.ADMIN_REGISTERED_SUCCESSFULLY), result);
+        } else {
+            Assertions.assertEquals(ResponseEntity.ok(Response.FAILED), result);
+        }
     }
 
     @Test
@@ -96,12 +91,11 @@ class AuthControllerTest {
         User user1 = Prototype.userA();
 
         when(userService.getByPhoneNumberAndRole(loginRequest1.getPhoneNumber(), "ROLE_USER")).thenReturn(user1);
-        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn(null);
+        when(jwtTokenProvider.createToken(loginRequest1.getPhoneNumber(), new Role())).thenReturn("token");
 
         Map<Object, Object> response = new HashMap<>();
         response.put("phone number ", loginRequest1.getPhoneNumber());
         response.put("token ", null);
-
 
         ResponseEntity<?> result = authController.userLogin(loginRequest1);
         Assertions.assertEquals(ResponseEntity.ok(response), result);

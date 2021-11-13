@@ -32,8 +32,7 @@ public class Prototype {
 
     public static Card createCard1() {
         String cardNumber = CardHelper.getNumber();
-        Card card = new Card(cardNumber, 500);
-        return card;
+        return new Card(cardNumber, 500);
     }
 
     public static Card createCard2() {

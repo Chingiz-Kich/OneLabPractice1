@@ -1,6 +1,7 @@
 package com.example.onelabpractice1.service;
 
 import com.example.onelabpractice1.Prototype;
+import com.example.onelabpractice1.models.Card;
 import com.example.onelabpractice1.models.Transfer;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.CardRepository;
@@ -31,10 +32,18 @@ class TransferServiceTest {
 
     @Test
     void testMakeTransfer() {
-/*        User user1 = Prototype.userA();
-        User user2 = Prototype.userB();
+        User user1 = mock(User.class);
+        Card card1 = mock(Card.class);
+        Transfer transfer1 = mock(Transfer.class);
 
-        Mockito.verify(cardRepository, atLeastOnce()).updateBalance(user1.getCard().getNumber(), 1000);*/
+        when(card1.getNumber()).thenReturn("cardNumber");
+        when(card1.getBalance()).thenReturn(1000d);
+        when(user1.getCard()).thenReturn(card1);
+        when(user1.getCard().getBalance()).thenReturn(1000d);
+        when(transferRepository.save(transfer1)).thenReturn(transfer1);
+
+        sut.makeTransfer(user1, user1, 1000);
+        verify(cardRepository, times(2)).updateBalance("cardNumber", 1000);
     }
 
     @Test

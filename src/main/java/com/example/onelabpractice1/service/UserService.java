@@ -8,6 +8,7 @@ import com.example.onelabpractice1.enums.Status;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.RoleRepository;
 import com.example.onelabpractice1.repository.UserRepository;
+import com.example.onelabpractice1.requests.UpdateRequest;
 import com.example.onelabpractice1.requests.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,5 +105,30 @@ public class UserService {
         Role role = Optional.of(roleRepository.findByName(roleName)).orElseThrow(() -> new NoSuchElementException(Constant.USER_NOT_FOUND_EXCEPTION));
         return Optional.of(userRepository.findByPhoneNumberAndRole(phoneNumber, role)).orElseThrow(() -> new NoSuchElementException(Constant.USER_NOT_FOUND_EXCEPTION));
 
+    }
+
+    public void updateUser(UpdateRequest updateRequest) {
+        User user = userRepository.findByPhoneNumber(updateRequest.getPhoneNumber());
+        if (!updateRequest.getName().equals("")) {
+            user.setName(updateRequest.getName());
+        }
+
+        if (!updateRequest.getSurname().equals("")) {
+            user.setSurname(updateRequest.getSurname());
+        }
+
+        if (!updateRequest.getEmail().equals("")) {
+            user.setEmail(updateRequest.getEmail());
+        }
+
+        if (!updateRequest.getPassword().equals("")) {
+            user.setPassword(updateRequest.getPassword());
+        }
+
+        userRepository.save(user);
+    }
+
+    public void deleteUser(String phoneNumber) {
+        userRepository.deleteByPhoneNumber(phoneNumber);
     }
 }

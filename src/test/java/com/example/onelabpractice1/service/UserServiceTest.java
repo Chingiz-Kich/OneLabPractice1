@@ -6,19 +6,25 @@ import com.example.onelabpractice1.models.Role;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.repository.RoleRepository;
 import com.example.onelabpractice1.repository.UserRepository;
+import com.example.onelabpractice1.requests.UpdateRequest;
 import com.example.onelabpractice1.requests.UserRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.example.onelabpractice1.Prototype.userB;
 import static org.mockito.Mockito.*;
+
 
 class UserServiceTest {
     @Mock
@@ -28,52 +34,29 @@ class UserServiceTest {
     @InjectMocks
     UserService sut;
 
+    private static Stream<Arguments> adminOrUser() {
+        return Stream.of(
+                Arguments.of(true, false),
+                Arguments.of(false, true),
+                Arguments.of(false, false)
+        );
+    }
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
-    @Test
-    void testAdminRegistration1() {
+    @ParameterizedTest
+    @MethodSource("adminOrUser")
+    void testAdminRegistration1(boolean isUser, boolean isAdmin) {
         UserRequest userRequest = Prototype.userRequest();
 
         when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
-        when(roleRepository.existsByName("ROLE_ADMIN")).thenReturn(true);
+        when(roleRepository.existsByName("ROLE_ADMIN")).thenReturn(isAdmin);
+        when(roleRepository.existsByName("ROLE_USER")).thenReturn(isUser);
 
-        boolean result = sut.registration(userRequest, true);
-        Assertions.assertTrue(result);
-    }
-
-    @Test
-    void testAdminRegistration2() {
-        UserRequest userRequest = Prototype.userRequest();
-
-        when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
-        when(roleRepository.existsByName("ROLE_ADMIN")).thenReturn(false);
-
-        boolean result = sut.registration(userRequest, true);
-        Assertions.assertTrue(result);
-    }
-
-    @Test
-    void testUserRegistration1() {
-        UserRequest userRequest = Prototype.userRequest();
-
-        when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
-        when(roleRepository.existsByName("ROLE_USER")).thenReturn(true);
-
-        boolean result = sut.registration(userRequest, false);
-        Assertions.assertTrue(result);
-    }
-
-    @Test
-    void testUserRegistration2() {
-        UserRequest userRequest = Prototype.userRequest();
-
-        when(userRepository.existsByPhoneNumber("87751994074")).thenReturn(true);
-        when(roleRepository.existsByName("ROLE_USER")).thenReturn(false);
-
-        boolean result = sut.registration(userRequest, false);
+        boolean result = sut.registration(userRequest, isAdmin);
         Assertions.assertTrue(result);
     }
 
@@ -179,6 +162,29 @@ class UserServiceTest {
 
         User result = sut.getByPhoneNumberAndRole(user1.getPhoneNumber(), role1.getName());
         Assertions.assertEquals(user1, result);
+    }
+
+    @Test
+    void testUpdateUser()  {
+        User user1 = Prototype.userA();
+        UpdateRequest updateRequest = mock(UpdateRequest.class);
+
+        when(userRepository.findByPhoneNumber(updateRequest.getPhoneNumber())).thenReturn(user1);
+        when(userRepository.save(user1)).thenReturn(user1);
+
+        when(updateRequest.getName()).thenReturn("name");
+        when(updateRequest.getSurname()).thenReturn("surname");
+        when(updateRequest.getEmail()).thenReturn("email");
+        when(updateRequest.getPassword()).thenReturn("password");
+
+        sut.updateUser(updateRequest);
+        verify(userRepository, times(1)).save(user1);
+    }
+
+    @Test
+    void testDeleteUser() {
+        sut.deleteUser("phoneNumber");
+        verify(userRepository, times(1)).deleteByPhoneNumber("phoneNumber");
     }
 }
 

@@ -63,4 +63,8 @@ public class CardService {
     public boolean isEnoughBalance(String phoneNumber, double money) {
         return userRepository.findByPhoneNumber(phoneNumber).getCard().getBalance() >= money;
     }
+
+    public void deleteCard(Card card) {
+        cardRepository.deleteCardByNumber(card.getNumber());
+    }
 }

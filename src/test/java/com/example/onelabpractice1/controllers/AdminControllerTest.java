@@ -4,6 +4,7 @@ import com.example.onelabpractice1.Prototype;
 import com.example.onelabpractice1.enums.Response;
 import com.example.onelabpractice1.models.User;
 import com.example.onelabpractice1.requests.TransferByPhoneRequest;
+import com.example.onelabpractice1.requests.UpdateRequest;
 import com.example.onelabpractice1.service.CardService;
 import com.example.onelabpractice1.service.TransferService;
 import com.example.onelabpractice1.service.UserService;
@@ -28,7 +29,7 @@ class AdminControllerTest {
     @Mock
     TransferService transferService;
     @InjectMocks
-    AdminController adminController;
+    AdminController sut;
 
     @BeforeEach
     void setUp() {
@@ -45,7 +46,7 @@ class AdminControllerTest {
 
         when(userService.getAllUsers()).thenReturn(userList);
 
-        List<User> result = adminController.getAllUsers();
+        List<User> result = sut.getAllUsers();
         Assertions.assertEquals(userList, result);
     }
 
@@ -59,7 +60,7 @@ class AdminControllerTest {
 
         when(userService.getAllSortByName()).thenReturn(userList);
 
-        List<User> result = adminController.getAllUsersSortByName();
+        List<User> result = sut.getAllUsersSortByName();
         Assertions.assertEquals(userList, result);
     }
 
@@ -71,7 +72,7 @@ class AdminControllerTest {
 
         when(userService.getAllWithName("Aaa")).thenReturn(userList);
 
-        List<User> result = adminController.getAllUserWithName("Aaa");
+        List<User> result = sut.getAllUserWithName("Aaa");
         Assertions.assertEquals(userList, result);
     }
 
@@ -89,8 +90,30 @@ class AdminControllerTest {
         when(userService.getByPhoneNumber(transferByPhoneRequest.getRecipientPhoneNumber())).thenReturn(user2);
         when(cardService.isEnoughBalance(transferByPhoneRequest.getRecipientPhoneNumber(), transferByPhoneRequest.getMoney())).thenReturn(true);
 
-        ResponseEntity<?> result = adminController.transferByPhone(transferByPhoneRequest);
+        ResponseEntity<?> result = sut.transferByPhone(transferByPhoneRequest);
         Assertions.assertEquals(ResponseEntity.ok(Response.OK), result);
+    }
+
+    @Test
+    void testUpdateUser() {
+        UpdateRequest updateRequest = mock(UpdateRequest.class);
+
+        when(userService.isPhoneNumberExist(updateRequest.getPhoneNumber())).thenReturn(true);
+
+        sut.update(updateRequest);
+        verify(userService, times(1)).updateUser(updateRequest);
+    }
+
+    @Test
+    void testDeleteUser() {
+        User user = mock(User.class);
+
+        when(userService.isPhoneNumberExist("phoneNumber")).thenReturn(true);
+        when(userService.getByPhoneNumber("phoneNumber")).thenReturn(user);
+
+        sut.delete("phoneNumber");
+        verify(userService, times(1)).deleteUser("phoneNumber");
+        verify(cardService, times(1)).deleteCard(user.getCard());
     }
 }
 
